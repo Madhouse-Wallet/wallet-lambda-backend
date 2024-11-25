@@ -8,12 +8,7 @@ provider:
   environment:
     MONGO_URI: ${env:MONGODB_URI}
     NODE_OPTIONS: --enable-source-maps
-  credentials:
-    accessKeyId: ${env:AWS_ACCESS_KEY_ID}
-    secretAccessKey: ${env:AWS_SECRET_ACCESS_KEY}
-    apiGateway:
-      apiId: ${env:API_ID}
-      resourceId: ${env:RESOURCE_ID}
+
   iam:
     role:
       statements:
@@ -46,7 +41,6 @@ functions:
       - httpApi:
           path: /wallets
           method: POST
-          cors: true
 
   getWallets:
     timeout: 600 # With cold starts this endpoint can be slow
@@ -56,7 +50,6 @@ functions:
       - httpApi:
           path: /wallets
           method: GET
-          cors: true
 
   getWalletById:
     timeout: 600 # With cold starts this endpoint can be slow
@@ -66,7 +59,6 @@ functions:
       - httpApi:
           path: /wallets/{id}
           method: GET
-          cors: true
 
   updateWallet:
     timeout: 600 # With cold starts this endpoint can be slow
@@ -76,7 +68,6 @@ functions:
       - httpApi:
           path: /wallets/{id}
           method: PUT
-          cors: true
 
   deleteWallet:
     timeout: 600 # With cold starts this endpoint can be slow
@@ -86,7 +77,6 @@ functions:
       - httpApi:
           path: /wallets/{id}
           method: DELETE
-          cors: true
 
 plugins:
   - serverless-offline
