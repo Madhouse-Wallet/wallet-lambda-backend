@@ -6,7 +6,7 @@ provider:
   region: ${env:AWS_REGION}
   stage: dev
   environment:
-    MONGO_URI: mongodb+srv://Gaurav:5r4pQBijweDHyu5E@madhouse-wallet.91du5.mongodb.net/madhouse
+    MONGO_URI: ${env:MONGODB_URI}
     NODE_OPTIONS: --enable-source-maps
   credentials:
     accessKeyId: ${env:AWS_ACCESS_KEY_ID}
