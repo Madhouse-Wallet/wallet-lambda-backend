@@ -1,0 +1,103 @@
+service: madhouse-backend
+
+provider:
+  name: aws
+  runtime: nodejs18.x
+  region: ${env:AWS_REGION}
+  stage: dev
+  environment:
+    MONGO_URI: mongodb+srv://Gaurav:5r4pQBijweDHyu5E@madhouse-wallet.91du5.mongodb.net/madhouse
+    NODE_OPTIONS: --enable-source-maps
+  credentials:
+    accessKeyId: ${env:AWS_ACCESS_KEY_ID}
+    secretAccessKey: ${env:AWS_SECRET_ACCESS_KEY}
+    apiGateway:
+      apiId: ${env:API_ID}
+      resourceId: ${env:RESOURCE_ID}
+  iam:
+    role:
+      statements:
+        - Effect: Allow
+          Action:
+            - events:PutRule
+            - events:PutTargets
+            - events:RemoveTargets
+            - events:DeleteRule
+            - events:ListTargetsByRule
+          Resource: "*"
+
+        - Effect: Allow
+          Action:
+            - lambda:AddPermission
+            - lambda:RemovePermission
+          Resource: "*"
+
+        - Effect: Allow
+          Action:
+            - lambda:InvokeFunction
+          Resource: "*"
+
+functions:
+  createWallet:
+    timeout: 600 # With cold starts this endpoint can be slow
+    memorySize: 2048 # default is 1024
+    handler: handler.createWallet
+    events:
+      - httpApi:
+          path: /wallets
+          method: POST
+          cors: true
+
+  getWallets:
+    timeout: 600 # With cold starts this endpoint can be slow
+    memorySize: 2048 # default is 1024
+    handler: handler.getWallets
+    events:
+      - httpApi:
+          path: /wallets
+          method: GET
+          cors: true
+
+  getWalletById:
+    timeout: 600 # With cold starts this endpoint can be slow
+    memorySize: 2048 # default is 1024
+    handler: handler.getWalletById
+    events:
+      - httpApi:
+          path: /wallets/{id}
+          method: GET
+          cors: true
+
+  updateWallet:
+    timeout: 600 # With cold starts this endpoint can be slow
+    memorySize: 2048 # default is 1024
+    handler: handler.updateWallet
+    events:
+      - httpApi:
+          path: /wallets/{id}
+          method: PUT
+          cors: true
+
+  deleteWallet:
+    timeout: 600 # With cold starts this endpoint can be slow
+    memorySize: 2048 # default is 1024
+    handler: handler.deleteWallet
+    events:
+      - httpApi:
+          path: /wallets/{id}
+          method: DELETE
+          cors: true
+
+plugins:
+  - serverless-offline
+
+custom:
+  serverless-offline:
+    httpPort: 3000
+
+package:
+  patterns:
+    - '!node_modules/**'
+    - '!*.test.js'
+    - '**/*'
+ 
