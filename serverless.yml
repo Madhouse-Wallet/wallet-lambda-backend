@@ -84,7 +84,7 @@ resources:
       Properties:
         CodeSigningConfigName: myCodeSigningConfig
         AllowedPublishers:
-          - Arn: arn:aws:iam::123456789012:role/mySigningRole
+          - Arn: ${env:CODE_SIGNING_PROFILE_ARN}
 
 
 plugins:
