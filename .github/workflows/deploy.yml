@@ -31,3 +31,6 @@ jobs:
       uses: serverless/github-action@v3
       with:
         args: deploy --stage production
+      env:
+        AWS_REGION: ${{ secrets.AWS_REGION }}
+        MONGODB_URI: ${{ secrets.MONGODB_URI }} 
