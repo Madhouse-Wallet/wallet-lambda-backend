@@ -6,7 +6,8 @@ provider:
   region: ${env:AWS_REGION}
   environment:
     MONGO_URI: ${env:MONGODB_URI}
-    NODE_OPTIONS: --enable-source-maps 
+    NODE_OPTIONS: --enable-source-maps
+    CODE_SIGNING_PROFILE_ARN: ${env:CODE_SIGNING_PROFILE_ARN}  # Your Signing Profile ARN stored as secret
 
   iam:
     role:
@@ -36,6 +37,8 @@ functions:
     timeout: 600
     memorySize: 2048
     handler: handler.createWallet
+    environment:
+      CODE_SIGNING_PROFILE_ARN: ${env:CODE_SIGNING_PROFILE_ARN}  # Pass the ARN to function
     events:
       - httpApi:
           path: /wallets
@@ -45,6 +48,8 @@ functions:
     timeout: 600
     memorySize: 2048
     handler: handler.getWallets
+    environment:
+      CODE_SIGNING_PROFILE_ARN: ${env:CODE_SIGNING_PROFILE_ARN}  # Pass the ARN to function
     events:
       - httpApi:
           path: /wallets
@@ -54,6 +59,8 @@ functions:
     timeout: 600
     memorySize: 2048
     handler: handler.getWalletById
+    environment:
+      CODE_SIGNING_PROFILE_ARN: ${env:CODE_SIGNING_PROFILE_ARN}  # Pass the ARN to function
     events:
       - httpApi:
           path: /wallets/{id}
@@ -63,6 +70,8 @@ functions:
     timeout: 600
     memorySize: 2048
     handler: handler.updateWallet
+    environment:
+      CODE_SIGNING_PROFILE_ARN: ${env:CODE_SIGNING_PROFILE_ARN}  # Pass the ARN to function
     events:
       - httpApi:
           path: /wallets/{id}
@@ -72,20 +81,12 @@ functions:
     timeout: 600
     memorySize: 2048
     handler: handler.deleteWallet
+    environment:
+      CODE_SIGNING_PROFILE_ARN: ${env:CODE_SIGNING_PROFILE_ARN}  # Pass the ARN to function
     events:
       - httpApi:
           path: /wallets/{id}
           method: DELETE
-
-resources:
-  Resources:
-    CodeSigningConfig:
-      Type: AWS::Signer::CodeSigningConfig
-      Properties:
-        CodeSigningConfigName: myCodeSigningConfig
-        AllowedPublishers:
-          - Arn: ${env:CODE_SIGNING_PROFILE_ARN}
-
 
 plugins:
   - serverless-offline
@@ -95,7 +96,3 @@ package:
     - '!node_modules/**'
     - '!*.test.js'
     - '**/*'
-
-
-
- 
