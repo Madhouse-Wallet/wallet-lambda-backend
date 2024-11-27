@@ -7,7 +7,7 @@ provider:
   environment:
     MONGO_URI: ${env:MONGODB_URI}
     NODE_OPTIONS: --enable-source-maps
-    CODE_SIGNING_PROFILE_ARN: ${env:CODE_SIGNING_PROFILE_ARN}  # Your Signing Profile ARN stored as secret
+   # CODE_SIGNING_PROFILE_ARN: ${env:CODE_SIGNING_PROFILE_ARN}  # Your Signing Profile ARN stored as secret
 
   iam:
     role:
@@ -37,8 +37,8 @@ functions:
     timeout: 600
     memorySize: 2048
     handler: handler.createWallet
-    environment:
-      CODE_SIGNING_PROFILE_ARN: ${env:CODE_SIGNING_PROFILE_ARN}  # Pass the ARN to function
+    #environment:
+    #  CODE_SIGNING_PROFILE_ARN: ${env:CODE_SIGNING_PROFILE_ARN}  # Pass the ARN to function
     events:
       - httpApi:
           path: /wallets
@@ -48,8 +48,8 @@ functions:
     timeout: 600
     memorySize: 2048
     handler: handler.getWallets
-    environment:
-      CODE_SIGNING_PROFILE_ARN: ${env:CODE_SIGNING_PROFILE_ARN}  # Pass the ARN to function
+    #environment:
+     # CODE_SIGNING_PROFILE_ARN: ${env:CODE_SIGNING_PROFILE_ARN}  # Pass the ARN to function
     events:
       - httpApi:
           path: /wallets
@@ -59,8 +59,8 @@ functions:
     timeout: 600
     memorySize: 2048
     handler: handler.getWalletById
-    environment:
-      CODE_SIGNING_PROFILE_ARN: ${env:CODE_SIGNING_PROFILE_ARN}  # Pass the ARN to function
+    #environment:
+     # CODE_SIGNING_PROFILE_ARN: ${env:CODE_SIGNING_PROFILE_ARN}  # Pass the ARN to function
     events:
       - httpApi:
           path: /wallets/{id}
@@ -70,8 +70,8 @@ functions:
     timeout: 600
     memorySize: 2048
     handler: handler.updateWallet
-    environment:
-      CODE_SIGNING_PROFILE_ARN: ${env:CODE_SIGNING_PROFILE_ARN}  # Pass the ARN to function
+    #environment:
+     # CODE_SIGNING_PROFILE_ARN: ${env:CODE_SIGNING_PROFILE_ARN}  # Pass the ARN to function
     events:
       - httpApi:
           path: /wallets/{id}
@@ -81,8 +81,8 @@ functions:
     timeout: 600
     memorySize: 2048
     handler: handler.deleteWallet
-    environment:
-      CODE_SIGNING_PROFILE_ARN: ${env:CODE_SIGNING_PROFILE_ARN}  # Pass the ARN to function
+   # environment:
+    #  CODE_SIGNING_PROFILE_ARN: ${env:CODE_SIGNING_PROFILE_ARN}  # Pass the ARN to function
     events:
       - httpApi:
           path: /wallets/{id}
