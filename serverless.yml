@@ -5,7 +5,7 @@ provider:
   runtime: nodejs18.x
   region: ${env:AWS_REGION}
   environment:
-    MONGO_URI: ${env:MONGODB_URI}
+    MONGODB_URI: ${env:MONGODB_URI}
     NODE_OPTIONS: --enable-source-maps
    # CODE_SIGNING_PROFILE_ARN: ${env:CODE_SIGNING_PROFILE_ARN}  # Your Signing Profile ARN stored as secret
 
