@@ -5,7 +5,6 @@ const Wallet = require("./model/wallet"); // Reuse the schema and model
 module.exports.createWallet = async (event) => {
     try {
         await connectToDatabase();
-
         const { passkey, walletAddress } = JSON.parse(event.body);
         console.log("walletAddress--->", passkey, walletAddress)
         if (!passkey || !walletAddress) {
@@ -34,7 +33,7 @@ module.exports.createWallet = async (event) => {
 module.exports.getWallets = async () => {
     try {
         await connectToDatabase();
-
+        console.log("connectToDatabase-->")
         const wallets = await Wallet.find();
 
         return {
@@ -124,6 +123,7 @@ module.exports.deleteWallet = async (event) => {
             body: JSON.stringify({ message: "Wallet deleted successfully" }),
         };
     } catch (error) {
+        console.log("error-->",error)
         return {
             statusCode: 500,
             body: JSON.stringify({ message: "Internal server error", error: error.message }),
