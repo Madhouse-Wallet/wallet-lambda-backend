@@ -4,10 +4,9 @@ provider:
   name: aws
   runtime: nodejs18.x
   region: ${env:AWS_REGION}
-  stage: dev
   environment:
     MONGO_URI: ${env:MONGODB_URI}
-    NODE_OPTIONS: --enable-source-maps
+    NODE_OPTIONS: --enable-source-maps 
 
   iam:
     role:
@@ -34,8 +33,8 @@ provider:
 
 functions:
   createWallet:
-    timeout: 600 # With cold starts this endpoint can be slow
-    memorySize: 2048 # default is 1024
+    timeout: 600
+    memorySize: 2048
     handler: handler.createWallet
     events:
       - httpApi:
@@ -43,8 +42,8 @@ functions:
           method: POST
 
   getWallets:
-    timeout: 600 # With cold starts this endpoint can be slow
-    memorySize: 2048 # default is 1024
+    timeout: 600
+    memorySize: 2048
     handler: handler.getWallets
     events:
       - httpApi:
@@ -52,8 +51,8 @@ functions:
           method: GET
 
   getWalletById:
-    timeout: 600 # With cold starts this endpoint can be slow
-    memorySize: 2048 # default is 1024
+    timeout: 600
+    memorySize: 2048
     handler: handler.getWalletById
     events:
       - httpApi:
@@ -61,8 +60,8 @@ functions:
           method: GET
 
   updateWallet:
-    timeout: 600 # With cold starts this endpoint can be slow
-    memorySize: 2048 # default is 1024
+    timeout: 600
+    memorySize: 2048
     handler: handler.updateWallet
     events:
       - httpApi:
@@ -70,24 +69,33 @@ functions:
           method: PUT
 
   deleteWallet:
-    timeout: 600 # With cold starts this endpoint can be slow
-    memorySize: 2048 # default is 1024
+    timeout: 600
+    memorySize: 2048
     handler: handler.deleteWallet
     events:
       - httpApi:
           path: /wallets/{id}
           method: DELETE
 
+resources:
+  Resources:
+    CodeSigningConfig:
+      Type: AWS::Signer::CodeSigningConfig
+      Properties:
+        CodeSigningConfigName: myCodeSigningConfig
+        AllowedPublishers:
+          - Arn: arn:aws:iam::123456789012:role/mySigningRole
+
+
 plugins:
   - serverless-offline
-
-custom:
-  serverless-offline:
-    httpPort: 3000
 
 package:
   patterns:
     - '!node_modules/**'
     - '!*.test.js'
     - '**/*'
+
+
+
  
