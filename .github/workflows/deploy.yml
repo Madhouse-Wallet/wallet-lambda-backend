@@ -34,3 +34,4 @@ jobs:
       env:
         AWS_REGION: ${{ secrets.AWS_REGION }}
         MONGODB_URI: ${{ secrets.MONGODB_URI }} 
+        CODE_SIGNING_PROFILE_ARN: ${{ secrets.CODE_SIGNING_PROFILE_ARN }} 
