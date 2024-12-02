@@ -43,7 +43,17 @@ functions:
       - httpApi:
           path: /wallets
           method: POST
-          cors: true
+          cors:
+            origin: '*'
+            headers:
+              - Content-Type
+              - X-Amz-Date
+              - Authorization
+              - X-Api-Key
+              - X-Amz-Security-Token
+              - X-Amz-User-Agent
+              - X-Amzn-Trace-Id
+            allowCredentials: true
 
   getWallets:
     timeout: 600
