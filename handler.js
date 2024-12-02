@@ -10,6 +10,10 @@ module.exports.createWallet = async (event) => {
         if (!passkey || !walletAddress) {
             return {
                 statusCode: 400,
+                headers: {
+                    "Access-Control-Allow-Origin": "*", 
+                    "Access-Control-Allow-Credentials": true 
+                },
                 body: JSON.stringify({ message: "Passkey and address are required" }),
             };
         }
@@ -19,11 +23,19 @@ module.exports.createWallet = async (event) => {
 
         return {
             statusCode: 201,
+            headers: {
+                "Access-Control-Allow-Origin": "*", 
+                "Access-Control-Allow-Credentials": true 
+            },
             body: JSON.stringify({ message: "Wallet created successfully", wallet }),
         };
     } catch (error) {
         return {
             statusCode: 500,
+            headers: {
+                "Access-Control-Allow-Origin": "*", 
+                "Access-Control-Allow-Credentials": true 
+            },
             body: JSON.stringify({ message: "Internal server error", error: error.message }),
         };
     }
@@ -38,11 +50,19 @@ module.exports.getWallets = async () => {
 
         return {
             statusCode: 200,
+            headers: {
+                "Access-Control-Allow-Origin": "*", 
+                "Access-Control-Allow-Credentials": true 
+            },
             body: JSON.stringify(wallets),
         };
     } catch (error) {
         return {
             statusCode: 500,
+            headers: {
+                "Access-Control-Allow-Origin": "*", 
+                "Access-Control-Allow-Credentials": true 
+            },
             body: JSON.stringify({ message: "Internal server error", error: error.message }),
         };
     }
@@ -59,17 +79,29 @@ module.exports.getWalletById = async (event) => {
         if (!wallet) {
             return {
                 statusCode: 404,
+                headers: {
+                    "Access-Control-Allow-Origin": "*", 
+                    "Access-Control-Allow-Credentials": true 
+                },
                 body: JSON.stringify({ message: "Wallet not found" }),
             };
         }
 
         return {
             statusCode: 200,
+            headers: {
+                "Access-Control-Allow-Origin": "*", 
+                "Access-Control-Allow-Credentials": true 
+            },
             body: JSON.stringify(wallet),
         };
     } catch (error) {
         return {
             statusCode: 500,
+            headers: {
+                "Access-Control-Allow-Origin": "*", 
+                "Access-Control-Allow-Credentials": true 
+            },
             body: JSON.stringify({ message: "Internal server error", error: error.message }),
         };
     }
@@ -87,17 +119,29 @@ module.exports.updateWallet = async (event) => {
         if (!wallet) {
             return {
                 statusCode: 404,
+                headers: {
+                    "Access-Control-Allow-Origin": "*", 
+                    "Access-Control-Allow-Credentials": true 
+                },
                 body: JSON.stringify({ message: "Wallet not found" }),
             };
         }
 
         return {
             statusCode: 200,
+            headers: {
+                "Access-Control-Allow-Origin": "*", 
+                "Access-Control-Allow-Credentials": true 
+            },
             body: JSON.stringify({ message: "Wallet updated successfully", wallet }),
         };
     } catch (error) {
         return {
             statusCode: 500,
+            headers: {
+                "Access-Control-Allow-Origin": "*", 
+                "Access-Control-Allow-Credentials": true 
+            },
             body: JSON.stringify({ message: "Internal server error", error: error.message }),
         };
     }
@@ -114,18 +158,30 @@ module.exports.deleteWallet = async (event) => {
         if (!wallet) {
             return {
                 statusCode: 404,
+                headers: {
+                    "Access-Control-Allow-Origin": "*", 
+                    "Access-Control-Allow-Credentials": true 
+                },
                 body: JSON.stringify({ message: "Wallet not found" }),
             };
         }
 
         return {
             statusCode: 200,
+            headers: {
+                "Access-Control-Allow-Origin": "*", 
+                "Access-Control-Allow-Credentials": true 
+            },
             body: JSON.stringify({ message: "Wallet deleted successfully" }),
         };
     } catch (error) {
         console.log("error-->",error)
         return {
             statusCode: 500,
+            headers: {
+                "Access-Control-Allow-Origin": "*", 
+                "Access-Control-Allow-Credentials": true 
+            },
             body: JSON.stringify({ message: "Internal server error", error: error.message }),
         };
     }
