@@ -11,8 +11,10 @@ module.exports.createWallet = async (event) => {
             return {
                 statusCode: 400,
                 headers: {
-                    "Access-Control-Allow-Origin": "*", 
-                    "Access-Control-Allow-Credentials": true 
+                    "Access-Control-Allow-Origin": "*",
+                    "Access-Control-Allow-Headers": "Content-Type",
+                    "Access-Control-Allow-Methods": "*",
+                    "Access-Control-Allow-Credentials": true
                 },
                 body: JSON.stringify({ message: "Passkey and address are required" }),
             };
@@ -24,8 +26,10 @@ module.exports.createWallet = async (event) => {
         return {
             statusCode: 201,
             headers: {
-                "Access-Control-Allow-Origin": "*", 
-                "Access-Control-Allow-Credentials": true 
+                "Access-Control-Allow-Origin": "*",
+                "Access-Control-Allow-Headers": "Content-Type",
+                "Access-Control-Allow-Methods": "*",
+                "Access-Control-Allow-Credentials": true
             },
             body: JSON.stringify({ message: "Wallet created successfully", wallet }),
         };
@@ -33,8 +37,10 @@ module.exports.createWallet = async (event) => {
         return {
             statusCode: 500,
             headers: {
-                "Access-Control-Allow-Origin": "*", 
-                "Access-Control-Allow-Credentials": true 
+                "Access-Control-Allow-Origin": "*",
+                "Access-Control-Allow-Headers": "Content-Type",
+                "Access-Control-Allow-Methods": "*",
+                "Access-Control-Allow-Credentials": true
             },
             body: JSON.stringify({ message: "Internal server error", error: error.message }),
         };
@@ -51,8 +57,10 @@ module.exports.getWallets = async () => {
         return {
             statusCode: 200,
             headers: {
-                "Access-Control-Allow-Origin": "*", 
-                "Access-Control-Allow-Credentials": true 
+                "Access-Control-Allow-Origin": "*",
+                "Access-Control-Allow-Headers": "Content-Type",
+                "Access-Control-Allow-Methods": "*",
+                "Access-Control-Allow-Credentials": true
             },
             body: JSON.stringify(wallets),
         };
@@ -60,8 +68,10 @@ module.exports.getWallets = async () => {
         return {
             statusCode: 500,
             headers: {
-                "Access-Control-Allow-Origin": "*", 
-                "Access-Control-Allow-Credentials": true 
+                "Access-Control-Allow-Origin": "*",
+                "Access-Control-Allow-Headers": "Content-Type",
+                "Access-Control-Allow-Methods": "*",
+                "Access-Control-Allow-Credentials": true
             },
             body: JSON.stringify({ message: "Internal server error", error: error.message }),
         };
@@ -80,8 +90,10 @@ module.exports.getWalletById = async (event) => {
             return {
                 statusCode: 404,
                 headers: {
-                    "Access-Control-Allow-Origin": "*", 
-                    "Access-Control-Allow-Credentials": true 
+                    "Access-Control-Allow-Origin": "*",
+                    "Access-Control-Allow-Headers": "Content-Type",
+                    "Access-Control-Allow-Methods": "*",
+                    "Access-Control-Allow-Credentials": true
                 },
                 body: JSON.stringify({ message: "Wallet not found" }),
             };
@@ -90,8 +102,10 @@ module.exports.getWalletById = async (event) => {
         return {
             statusCode: 200,
             headers: {
-                "Access-Control-Allow-Origin": "*", 
-                "Access-Control-Allow-Credentials": true 
+                "Access-Control-Allow-Origin": "*",
+                "Access-Control-Allow-Headers": "Content-Type",
+                "Access-Control-Allow-Methods": "*",
+                "Access-Control-Allow-Credentials": true
             },
             body: JSON.stringify(wallet),
         };
@@ -99,8 +113,10 @@ module.exports.getWalletById = async (event) => {
         return {
             statusCode: 500,
             headers: {
-                "Access-Control-Allow-Origin": "*", 
-                "Access-Control-Allow-Credentials": true 
+                "Access-Control-Allow-Origin": "*",
+                "Access-Control-Allow-Headers": "Content-Type",
+                "Access-Control-Allow-Methods": "*",
+                "Access-Control-Allow-Credentials": true
             },
             body: JSON.stringify({ message: "Internal server error", error: error.message }),
         };
@@ -120,8 +136,10 @@ module.exports.updateWallet = async (event) => {
             return {
                 statusCode: 404,
                 headers: {
-                    "Access-Control-Allow-Origin": "*", 
-                    "Access-Control-Allow-Credentials": true 
+                    "Access-Control-Allow-Origin": "*",
+                    "Access-Control-Allow-Headers": "Content-Type",
+                    "Access-Control-Allow-Methods": "*",
+                    "Access-Control-Allow-Credentials": true
                 },
                 body: JSON.stringify({ message: "Wallet not found" }),
             };
@@ -130,8 +148,10 @@ module.exports.updateWallet = async (event) => {
         return {
             statusCode: 200,
             headers: {
-                "Access-Control-Allow-Origin": "*", 
-                "Access-Control-Allow-Credentials": true 
+                "Access-Control-Allow-Origin": "*",
+                "Access-Control-Allow-Headers": "Content-Type",
+                "Access-Control-Allow-Methods": "*",
+                "Access-Control-Allow-Credentials": true
             },
             body: JSON.stringify({ message: "Wallet updated successfully", wallet }),
         };
@@ -139,8 +159,10 @@ module.exports.updateWallet = async (event) => {
         return {
             statusCode: 500,
             headers: {
-                "Access-Control-Allow-Origin": "*", 
-                "Access-Control-Allow-Credentials": true 
+                "Access-Control-Allow-Origin": "*",
+                "Access-Control-Allow-Headers": "Content-Type",
+                "Access-Control-Allow-Methods": "*",
+                "Access-Control-Allow-Credentials": true
             },
             body: JSON.stringify({ message: "Internal server error", error: error.message }),
         };
@@ -159,8 +181,10 @@ module.exports.deleteWallet = async (event) => {
             return {
                 statusCode: 404,
                 headers: {
-                    "Access-Control-Allow-Origin": "*", 
-                    "Access-Control-Allow-Credentials": true 
+                    "Access-Control-Allow-Origin": "*",
+                    "Access-Control-Allow-Headers": "Content-Type",
+                    "Access-Control-Allow-Methods": "*",
+                    "Access-Control-Allow-Credentials": true
                 },
                 body: JSON.stringify({ message: "Wallet not found" }),
             };
@@ -169,18 +193,22 @@ module.exports.deleteWallet = async (event) => {
         return {
             statusCode: 200,
             headers: {
-                "Access-Control-Allow-Origin": "*", 
-                "Access-Control-Allow-Credentials": true 
+                "Access-Control-Allow-Origin": "*",
+                "Access-Control-Allow-Headers": "Content-Type",
+                "Access-Control-Allow-Methods": "*",
+                "Access-Control-Allow-Credentials": true
             },
             body: JSON.stringify({ message: "Wallet deleted successfully" }),
         };
     } catch (error) {
-        console.log("error-->",error)
+        console.log("error-->", error)
         return {
             statusCode: 500,
             headers: {
-                "Access-Control-Allow-Origin": "*", 
-                "Access-Control-Allow-Credentials": true 
+                "Access-Control-Allow-Origin": "*",
+                "Access-Control-Allow-Headers": "Content-Type",
+                "Access-Control-Allow-Methods": "*",
+                "Access-Control-Allow-Credentials": true
             },
             body: JSON.stringify({ message: "Internal server error", error: error.message }),
         };
