@@ -43,6 +43,7 @@ functions:
       - httpApi:
           path: /wallets
           method: POST
+          cors: true
 
   getWallets:
     timeout: 600
@@ -54,6 +55,7 @@ functions:
       - httpApi:
           path: /wallets
           method: GET
+          cors: true
 
   getWalletById:
     timeout: 600
@@ -65,6 +67,7 @@ functions:
       - httpApi:
           path: /wallets/{id}
           method: GET
+          cors: true
 
   updateWallet:
     timeout: 600
@@ -76,6 +79,7 @@ functions:
       - httpApi:
           path: /wallets/{id}
           method: PUT
+          cors: true
 
   deleteWallet:
     timeout: 600
@@ -87,6 +91,7 @@ functions:
       - httpApi:
           path: /wallets/{id}
           method: DELETE
+          cors: true
 
 plugins:
   - serverless-offline
