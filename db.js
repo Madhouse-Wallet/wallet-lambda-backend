@@ -9,7 +9,7 @@ const connectToDatabase = async () => {
     if (isConnected) {
       console.log("=> Using existing database connection");
       return;
-    }
+    } 
  
     console.log("=> Establishing new database connection");
     await mongoose.connect(process.env.MONGODB_URI, {
