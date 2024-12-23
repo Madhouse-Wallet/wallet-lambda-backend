@@ -65,3 +65,39 @@ module.exports.receiveTbtc = async (event) => {
 
 
 
+// module.exports.mintBtc = async (event) => {
+//     try {
+//         await connectToDatabase();
+//         const { id } = JSON.parse(event.body);
+//         // console.log("walletAddress--->", userWallet, recovery)
+//         if (!id) {
+//             return sendResponse(400, { message: "Deposit ID is required!", status:"failure"})
+//         }
+//         const result = await wallet.findOne({where:{
+//             _id: id
+//         }});
+//         if(!result){
+//             return sendResponse(400, { message: "No Deposit Found!", status:"failure"})
+//         }
+//         // Setup OpenZeppelin Defender client and signer
+//         const getSignerData = await getNewSigner();
+//         console.log("result-->", result, getSignerData)
+//         const sdk = await initializeTBTC(getSignerData?.signer);
+//         console.log("sdk-->", sdk)
+//         const deposit = await sdk.deposits.initiateDeposit(recovery);
+//         const bitcoinDepositAddress = await deposit.getBitcoinAddress();
+//         const wallet = new Wallet({
+//             userId: result._id,
+//             userWallet: userWallet,
+//             recoveryAddress: recovery,
+//             depositAddress: bitcoinDepositAddress,
+//             status: "Pending",
+//             depositType: "receive",
+//             depositInstane: sdk
+//         });
+//         await wallet.save();
+//         return sendResponse(201, { message: "Wallet created successfully!", data: { depositAddress: bitcoinDepositAddress } })
+//     } catch (error) {
+//         return sendResponse(500, { message: "Internal server error", error: error.message })
+//     }
+// };

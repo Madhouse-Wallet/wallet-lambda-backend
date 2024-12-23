@@ -35,7 +35,7 @@ provider:
 functions:
 
   receiveTbtc:
-    timeout: 600
+    timeout: 150000
     memorySize: 2048
     handler: handler.receiveTbtc
     #environment:
