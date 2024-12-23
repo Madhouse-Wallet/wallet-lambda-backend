@@ -84,7 +84,7 @@ module.exports.mintBtc = async (event) => {
         }
         // console.log("result-->",result.depositInstane)
         let depositSetup = result.depositInstane;
-        const fundingUTXOs = await depositSetup.detectFunding()
+        const fundingUTXOs = await depositSetup.getBitcoinAddress()
         console.log("fundingUTXOs---->", fundingUTXOs)
         // Initiate minting using one of the funding UTXOs. Returns hash of the
         // initiate minting transaction.
