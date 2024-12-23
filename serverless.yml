@@ -33,66 +33,19 @@ provider:
           Resource: "*"
 
 functions:
-  createWallet:
+
+  receiveTbtc:
     timeout: 600
     memorySize: 2048
-    handler: handler.createWallet
+    handler: handler.receiveTbtc
     #environment:
     #  CODE_SIGNING_PROFILE_ARN: ${env:CODE_SIGNING_PROFILE_ARN}  # Pass the ARN to function
     events:
       - httpApi:
-          path: /wallets
+          path: /api/v1/receiveTbtc
           method: POST
           cors: true
-
-  getWallets:
-    timeout: 600
-    memorySize: 2048
-    handler: handler.getWallets
-    #environment:
-     # CODE_SIGNING_PROFILE_ARN: ${env:CODE_SIGNING_PROFILE_ARN}  # Pass the ARN to function
-    events:
-      - httpApi:
-          path: /wallets
-          method: GET
-          cors: true
-
-  getWalletById:
-    timeout: 600
-    memorySize: 2048
-    handler: handler.getWalletById
-    #environment:
-     # CODE_SIGNING_PROFILE_ARN: ${env:CODE_SIGNING_PROFILE_ARN}  # Pass the ARN to function
-    events:
-      - httpApi:
-          path: /wallets/{id}
-          method: GET
-          cors: true
-
-  updateWallet:
-    timeout: 600
-    memorySize: 2048
-    handler: handler.updateWallet
-    #environment:
-     # CODE_SIGNING_PROFILE_ARN: ${env:CODE_SIGNING_PROFILE_ARN}  # Pass the ARN to function
-    events:
-      - httpApi:
-          path: /wallets/{id}
-          method: PUT
-          cors: true
-
-  deleteWallet:
-    timeout: 600
-    memorySize: 2048
-    handler: handler.deleteWallet
-   # environment:
-    #  CODE_SIGNING_PROFILE_ARN: ${env:CODE_SIGNING_PROFILE_ARN}  # Pass the ARN to function
-    events:
-      - httpApi:
-          path: /wallets/{id}
-          method: DELETE
-          cors: true
-
+ 
 plugins:
   - serverless-offline
 
