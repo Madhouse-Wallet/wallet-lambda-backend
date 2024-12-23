@@ -32,7 +32,7 @@ module.exports.receiveTbtc = async (event) => {
         const { userWallet, recovery } = JSON.parse(event.body);
         // console.log("walletAddress--->", userWallet, recovery)
         if (!userWallet || !recovery) {
-            return sendResponse(400, { message: " User or Recovery Address is required!" })
+            return sendResponse(400, { message: " User or Recovery Address is required!", status:"failure"})
         }
         const result = await userService.findOneAndUpdateUpsert({
             wallet: userWallet
@@ -56,9 +56,9 @@ module.exports.receiveTbtc = async (event) => {
             depositInstane: sdk
         });
         await wallet.save();
-        return sendResponse(201, { message: "Wallet created successfully!", data: { depositAddress: bitcoinDepositAddress, id: wallet?._id } })
+        return sendResponse(201, { message: "Wallet created successfully!", status:"success", data: { depositAddress: bitcoinDepositAddress, id: wallet?._id } })
     } catch (error) {
-        return sendResponse(500, { message: "Internal server error", error: error.message })
+        return sendResponse(500, { message: "Internal server error", status:"failure", error: error.message })
     }
 };
 
