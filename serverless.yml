@@ -7,6 +7,7 @@ provider:
   environment:
     MONGODB_URI: ${env:MONGODB_URI}
     NODE_OPTIONS: --enable-source-maps
+  role: ${self:service}-${opt:stage}-IamRoleLambdaExecution
    # CODE_SIGNING_PROFILE_ARN: ${env:CODE_SIGNING_PROFILE_ARN}  # Your Signing Profile ARN stored as secret
 
   iam:
@@ -34,18 +35,7 @@ provider:
 
 functions:
 
-  receiveTbtc:
-    timeout: 150000
-    memorySize: 2048
-    handler: handler.receiveTbtc
-    #environment:
-    #  CODE_SIGNING_PROFILE_ARN: ${env:CODE_SIGNING_PROFILE_ARN}  # Pass the ARN to function
-    events:
-      - httpApi:
-          path: /api/v1/receive_btc
-          method: POST
-          cors: true
-
+ 
   mintBtc:
     timeout: 150000
     memorySize: 2048
