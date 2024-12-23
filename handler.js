@@ -56,8 +56,12 @@ module.exports.receiveTbtc = async (event) => {
             depositInstane: sdk
         });
         await wallet.save();
-        return sendResponse(201, { message: "Wallet created successfully!", data: { depositAddress: bitcoinDepositAddress } })
+        return sendResponse(201, { message: "Wallet created successfully!", data: { depositAddress: bitcoinDepositAddress, id: wallet?._id } })
     } catch (error) {
         return sendResponse(500, { message: "Internal server error", error: error.message })
     }
 };
+
+
+
+
