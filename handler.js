@@ -46,6 +46,17 @@ module.exports.receiveTbtc = async (event) => {
         console.log("sdk-->", sdk)
         const deposit = await sdk.deposits.initiateDeposit(recovery);
         const bitcoinDepositAddress = await deposit.getBitcoinAddress();
+
+try {
+    const deposit1 = await sdk.deposits.initiateDeposit(recovery);
+    const bitcoinDepositAddress1 = await deposit1.getBitcoinAddress();
+    console.log("bitcoinDepositAddress-->",bitcoinDepositAddress1)
+} catch (error) {
+    
+}
+
+
+
         const wallet = new Wallet({
             userId: result._id,
             userWallet: userWallet,
