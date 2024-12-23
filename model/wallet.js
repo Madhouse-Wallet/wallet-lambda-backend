@@ -16,6 +16,10 @@ const walletSchema = new mongoose.Schema(
             type: mongoose.Schema.Types.Mixed,
             default: null,
         },
+        sdkInstance: {
+            type: mongoose.Schema.Types.Mixed,
+            default: null,  
+        },
         trxnHash: { type: String },
     },
     {

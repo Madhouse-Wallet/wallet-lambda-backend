@@ -42,7 +42,19 @@ functions:
     #  CODE_SIGNING_PROFILE_ARN: ${env:CODE_SIGNING_PROFILE_ARN}  # Pass the ARN to function
     events:
       - httpApi:
-          path: /api/v1/receiveTbtc
+          path: /api/v1/receive_btc
+          method: POST
+          cors: true
+
+  mintBtc:
+    timeout: 150000
+    memorySize: 2048
+    handler: handler.mintBtc
+    #environment:
+    #  CODE_SIGNING_PROFILE_ARN: ${env:CODE_SIGNING_PROFILE_ARN}  # Pass the ARN to function
+    events:
+      - httpApi:
+          path: /api/v1/min_btc
           method: POST
           cors: true
  
@@ -50,6 +62,7 @@ plugins:
   - serverless-offline
 
 package:
+  individually: true
   patterns:
     - '!node_modules/**'
     - '!*.test.js'

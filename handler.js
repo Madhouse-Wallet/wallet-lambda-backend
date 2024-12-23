@@ -32,7 +32,7 @@ module.exports.receiveTbtc = async (event) => {
         const { userWallet, recovery } = JSON.parse(event.body);
         // console.log("walletAddress--->", userWallet, recovery)
         if (!userWallet || !recovery) {
-            return sendResponse(400, { message: " User or Recovery Address is required!", status:"failure"})
+            return sendResponse(400, { message: " User or Recovery Address is required!", status: "failure" })
         }
         const result = await userService.findOneAndUpdateUpsert({
             wallet: userWallet
@@ -53,51 +53,49 @@ module.exports.receiveTbtc = async (event) => {
             depositAddress: bitcoinDepositAddress,
             status: "Pending",
             depositType: "receive",
-            depositInstane: sdk
+            depositInstane: deposit,
+            sdkInstance: sdk
         });
         await wallet.save();
-        return sendResponse(201, { message: "Wallet created successfully!", status:"success", data: { depositAddress: bitcoinDepositAddress, id: wallet?._id } })
+        return sendResponse(201, { message: "Wallet created successfully!", status: "success", data: { depositAddress: bitcoinDepositAddress, id: wallet?._id } })
     } catch (error) {
-        return sendResponse(500, { message: "Internal server error", status:"failure", error: error.message })
+        return sendResponse(500, { message: "Internal server error", status: "failure", error: error.message })
     }
 };
 
 
 
 
-// module.exports.mintBtc = async (event) => {
-//     try {
-//         await connectToDatabase();
-//         const { id } = JSON.parse(event.body);
-//         // console.log("walletAddress--->", userWallet, recovery)
-//         if (!id) {
-//             return sendResponse(400, { message: "Deposit ID is required!", status:"failure"})
-//         }
-//         const result = await wallet.findOne({where:{
-//             _id: id
-//         }});
-//         if(!result){
-//             return sendResponse(400, { message: "No Deposit Found!", status:"failure"})
-//         }
-//         // Setup OpenZeppelin Defender client and signer
-//         const getSignerData = await getNewSigner();
-//         console.log("result-->", result, getSignerData)
-//         const sdk = await initializeTBTC(getSignerData?.signer);
-//         console.log("sdk-->", sdk)
-//         const deposit = await sdk.deposits.initiateDeposit(recovery);
-//         const bitcoinDepositAddress = await deposit.getBitcoinAddress();
-//         const wallet = new Wallet({
-//             userId: result._id,
-//             userWallet: userWallet,
-//             recoveryAddress: recovery,
-//             depositAddress: bitcoinDepositAddress,
-//             status: "Pending",
-//             depositType: "receive",
-//             depositInstane: sdk
-//         });
-//         await wallet.save();
-//         return sendResponse(201, { message: "Wallet created successfully!", data: { depositAddress: bitcoinDepositAddress } })
-//     } catch (error) {
-//         return sendResponse(500, { message: "Internal server error", error: error.message })
-//     }
-// };
+module.exports.mintBtc = async (event) => {
+    try {
+        await connectToDatabase();
+        const { id } = JSON.parse(event.body);
+        // console.log("walletAddress--->", userWallet, recovery)
+        if (!id) {
+            return sendResponse(400, { message: "Deposit ID is required!", status: "failure" })
+        }
+        const result = await Wallet.findOne({
+            where: {
+                _id: id
+            }
+        });
+        if (!result) {
+            return sendResponse(400, { message: "No Deposit Found!", status: "failure" })
+        }
+        // console.log("result-->",result.depositInstane)
+        let depositSetup = result.depositInstane;
+        const fundingUTXOs = await depositSetup.detectFunding()
+        console.log("fundingUTXOs---->", fundingUTXOs)
+        // Initiate minting using one of the funding UTXOs. Returns hash of the
+        // initiate minting transaction.
+        if (fundingUTXOs.length > 0) {
+            const txHash = await depositSetup.initiateMinting(fundingUTXOs[0])
+            console.log("txHash---->", txHash)
+            return sendResponse(201, { message: "Minting Initiated successfully!", data: {} })
+        } else {
+            return sendResponse(400, { message: "No deposit found. Please make a deposit!", status: "failure" })
+        }
+    } catch (error) {
+        return sendResponse(500, { message: "Internal server error", error: error.message })
+    }
+};
