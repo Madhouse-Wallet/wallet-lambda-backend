@@ -53,5 +53,6 @@ package:
   individually: true
   patterns:
     - '!node_modules/**'
+    - 'external/**'
     - '!*.test.js'
     - '**/*'

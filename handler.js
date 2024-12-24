@@ -25,18 +25,28 @@ const getNewSigner = async () => {
         console.log("error--->", error)
     }
 }
-console.log("initializeTBTC-->",initializeTBTC)
+console.log("initializeTBTC-->", initializeTBTC)
 
 const checkDeopsit = async (instance, id, endTime) => {
     try {
         const currentTime = new Date();
-
         if (currentTime < endTime) {
             const fundingUTXOs = await instance.detectFunding();
             console.log("fundingUTXOs---->", fundingUTXOs)
-            checkDeopsit(instance, id, endTime)
-        } else {
-
+            // Initiate minting using one of the funding UTXOs. Returns hash of the
+            // initiate minting transaction.
+            if (fundingUTXOs.length > 0) {
+                try {
+                    const txHash = await instance.initiateMinting(fundingUTXOs[0])
+                    console.log("txHash---->", txHash)    
+                } catch (error) {
+                    console.log("error-->f",error)
+                }
+            } else {
+                checkDeopsit(instance, id, endTime)
+            }
+        }else{
+            console.log("text000> time completed", new Date(), endTime)
         }
     } catch (error) {
         console.log("error--->", error)
