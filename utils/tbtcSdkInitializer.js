@@ -1,5 +1,7 @@
-import { TBTC } from "@keep-network/tbtc-v2.ts"; // tBTC SDK Initialization Function
-export async function initializeTBTC(signer) {
+// import { TBTC } from "@keep-network/tbtc-v2.ts"; // tBTC SDK Initialization Function
+const { TBTC } = require("@keep-network/tbtc-v2.ts");
+console.log("TBTC-->",TBTC) 
+async function initializeTBTC(signer) {
   try {
     // Initialize the SDK for Mainnet
     console.log("Initialize the SDK for Testnet");
@@ -17,3 +19,4 @@ export async function initializeTBTC(signer) {
     throw error; // Ensure errors are caught
   }
 }
+module.exports = { initializeTBTC };
