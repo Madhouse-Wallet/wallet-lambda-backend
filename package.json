@@ -12,15 +12,8 @@
     "@keep-network/tbtc-v2.ts": "^2.4.1",
     "@openzeppelin/defender-sdk": "^2.0.0",
     "async": "^3.2.0",
-    "aws-sdk": "^2.1354.0",
     "dotenv": "^16.4.5",
-    "ethers": "^5.7.2",
-    "fs": "0.0.1-security",
-    "jsonwebtoken": "^9.0.2",
-    "moment": "^2.29.1",
-    "moment-timezone": "^0.5.39",
     "mongoose": "^6.5.3",
-    "mongoose-slug-updater": "^3.3.0",
     "serverless": "^4.4.11",
     "serverless-offline": "^14.3.4"
   }

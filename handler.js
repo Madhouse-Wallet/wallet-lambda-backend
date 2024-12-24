@@ -1,7 +1,7 @@
 const connectToDatabase = require("./db");
 const Wallet = require("./model/wallet");
 const userService = require("./services/user");
-const { generateToken, sendResponse } = require("./utils/index")
+const { sendResponse } = require("./utils/index")
 const { initializeTBTC } = require("./utils/tbtcSdkInitializer")
 const { ethers } = require("ethers");
 const { Defender } = require("@openzeppelin/defender-sdk");
