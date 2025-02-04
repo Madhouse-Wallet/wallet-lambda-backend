@@ -20,6 +20,12 @@ jobs:
       with:
         node-version: 18
 
+    - name: Clear npm cache
+      run: npm cache clean --force
+
+    - name: Delete node_modules and package-lock.json
+      run: rm -rf node_modules package-lock.json
+
     - name: Install Serverless
       run: npm install -g serverless
 
