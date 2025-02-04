@@ -8,7 +8,7 @@ let sendResponse = (code, data) => {
             "Access-Control-Allow-Headers": "Content-Type",
             "Access-Control-Allow-Methods": "*",
             "Access-Control-Allow-Credentials": true
-        },
+        }, 
         body: JSON.stringify(data),
     })
 }; 

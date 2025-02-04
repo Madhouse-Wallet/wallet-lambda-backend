@@ -43,7 +43,7 @@ functions:
     events:
       - httpApi:
           path: /api/v1/receive_btc
-          method: POST
+          method: GET
           cors: true
  
 plugins:
