@@ -9,6 +9,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@aws-sdk/client-cloudformation": "^3.741.0",
     "async": "^3.2.0",
     "dotenv": "^16.4.5",
     "esbuild": "^0.24.2",
