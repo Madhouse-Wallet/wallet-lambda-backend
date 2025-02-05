@@ -45,6 +45,19 @@ functions:
           path: /api/v1/receive_btc
           method: GET
           cors: true
+
+  testdbConnection:
+    timeout: 900
+    memorySize: 2048
+    handler: handler.testdbConnection
+    #environment:
+    #  CODE_SIGNING_PROFILE_ARN: ${env:CODE_SIGNING_PROFILE_ARN}  # Pass the ARN to function
+    events:
+      - httpApi:
+          path: /api/v1/testdbConnection
+          method: GET
+          cors: true
+          
  
 plugins:
   - serverless-offline

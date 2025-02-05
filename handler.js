@@ -1,4 +1,5 @@
 const connectToDatabase = require("./db");
+const connectToDatabaseTest = require("./dbTest");
 const { sendResponse } = require("./utils/index")
 const { ethers } = require("ethers");
  const {startMonitoring} = require("./utils/coll")
@@ -9,6 +10,16 @@ module.exports.receiveTbtc = async (event) => {
         const tt =  startMonitoring()
         return sendResponse(201, { message: "cron started successfully!", status: "success", data: { } })
     } catch (error) {
+        return sendResponse(500, { message: "Internal server error", status: "failure", error: error.message })
+    }
+};
+
+module.exports.testdbConnection = async (event) => {
+    try { 
+        await connectToDatabaseTest();
+        return sendResponse(201, { message: "cron started successfully!", status: "success", data: { } })
+    } catch (error) {
+        console.log("connectToDatabaseTest-->",error)
         return sendResponse(500, { message: "Internal server error", status: "failure", error: error.message })
     }
 };
