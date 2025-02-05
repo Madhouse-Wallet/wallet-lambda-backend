@@ -14,36 +14,24 @@ jobs:
       contents: read
     steps:
     - uses: actions/checkout@v3
-
-    - name: Set up Node.js
-      uses: actions/setup-node@v3
+    - name: Set up Go
+      uses: actions/setup-go@v3
       with:
-        node-version: 18
-
-    - name: Clear npm cache
-      run: npm cache clean --force
-
-    - name: Delete node_modules and package-lock.json
-      run: rm -rf node_modules package-lock.json
-
-    - name: Install Serverless
-      run: npm install -g serverless
-
+        go-version: 1.17
+   # - name: Build
+   #   run: make build
     - name: Install npm dependencies
-      run: npm install --legacy-peer-deps
-
+      run: npm install
     - name: Configure AWS credentials from Test account
       uses: aws-actions/configure-aws-credentials@v1
       with:
         role-to-assume: ${{ secrets.AWS_DEV_GITHUB_ACTION_ROLE }}
         aws-region: ${{ secrets.AWS_REGION }}
-
     - name: Serverless deploy
       uses: serverless/github-action@v3
       with:
         args: deploy --stage production
       env:
-        SLS_DEBUG: "*"
         AWS_REGION: ${{ secrets.AWS_REGION }}
         MONGODB_URI: ${{ secrets.MONGODB_URI }} 
         CODE_SIGNING_PROFILE_ARN: ${{ secrets.CODE_SIGNING_PROFILE_ARN }} 
