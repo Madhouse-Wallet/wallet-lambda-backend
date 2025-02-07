@@ -17,7 +17,6 @@ module.exports.receiveTbtc = async (event) => {
 
 module.exports.testdbConnection = async (event) => {
     try {
-        const username = event.requestContext.authorizer.claims['cognito:username'];
         const dbName = 'madhouse';
 
         // Assume IAM role to access MongoDB Atlas
