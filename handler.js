@@ -4,7 +4,8 @@ const { sendResponse } = require("./utils/index")
 const { ethers } = require("ethers");
 const { startMonitoring } = require("./utils/coll")
 const AWS = require('aws-sdk');
-
+const { MongoClient } = require('mongodb');
+const iam = new AWS.IAM();
 module.exports.receiveTbtc = async (event) => {
     try {
         const tt = startMonitoring()
@@ -16,8 +17,40 @@ module.exports.receiveTbtc = async (event) => {
 
 module.exports.testdbConnection = async (event) => {
     try {
-        await connectToDatabaseTest();
-        return sendResponse(201, { message: "cron started successfully!", status: "success", data: {} })
+        const username = event.requestContext.authorizer.claims['cognito:username'];
+        const dbName = 'madhouse';
+
+        // Assume IAM role to access MongoDB Atlas
+        const params = {
+            RoleArn: "arn:aws:iam::145023121234:role/madhouse-ecs-role",
+            RoleSessionName: 'AccessMongoDB'
+        };
+        const credentials = await iam.assumeRole(params).promise();
+
+        // Connect to MongoDB Atlas
+        const uri = `mongodb+srv://${credentials.AccessKeyId}:${credentials.SecretAccessKey}@mycluster.mongodb.net/${dbName}?retryWrites=true&w=majority`;
+        const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
+        await client.connect();
+
+        // Get user's access privileges
+        const db = client.db(dbName);
+        console.log("db==>",db)
+        // const user = await db.collection('users').findOne({ username: username });
+        // const privileges = user.privileges;
+
+        // Perform database operation based on user's access privileges
+        // ...
+
+        // Disconnect from MongoDB Atlas
+        // await client.close();
+
+        const response = {
+            statusCode: 200,
+            body: JSON.stringify('Hello from Lambda!'),
+        };
+        return response;
+        // await connectToDatabaseTest();
+        // return sendResponse(201, { message: "cron started successfully!", status: "success", data: {} })
     } catch (error) {
         console.log("connectToDatabaseTest-->", error)
         return sendResponse(500, { message: "Internal server error", status: "failure", error: error.message })
@@ -49,7 +82,7 @@ module.exports.testMailClient = async (event) => {
         };
 
         try {
-              const sendEmailPromise = () => {
+            const sendEmailPromise = () => {
                 return new Promise((resolve, reject) => {
                     ses.sendEmail(params, (error, data) => {
                         if (error) {
@@ -62,13 +95,13 @@ module.exports.testMailClient = async (event) => {
                     });
                 });
             };
-    
+
             // Send email and await the result
             const data = await sendEmailPromise();
-    
+
             console.log('Email sent successfully:', data.MessageId);
             return sendResponse(201, { message: "cron started successfully!", status: "success", data: {} });
-    
+
         } catch (error) {
             console.error("Error sending email:", error);
             return sendResponse(500, { message: "Internal server error", status: "failure", error: error.message })
