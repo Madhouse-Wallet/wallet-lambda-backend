@@ -5,7 +5,7 @@ const { ethers } = require("ethers");
 const { startMonitoring } = require("./utils/coll")
 const AWS = require('aws-sdk');
 const { MongoClient } = require('mongodb');
-const iam = new AWS.IAM();
+;
 module.exports.receiveTbtc = async (event) => {
     try {
         const tt = startMonitoring()
@@ -18,13 +18,13 @@ module.exports.receiveTbtc = async (event) => {
 module.exports.testdbConnection = async (event) => {
     try {
         const dbName = 'madhouse';
-
+        const sts = new AWS.STS()
         // Assume IAM role to access MongoDB Atlas
         const params = {
             RoleArn: "arn:aws:iam::145023121234:role/madhouse-ecs-role",
             RoleSessionName: 'AccessMongoDB'
         };
-        const credentials = await iam.assumeRole(params).promise();
+        const credentials = await sts.assumeRole(params).promise();
 
         // Connect to MongoDB Atlas
         const uri = `mongodb+srv://${credentials.AccessKeyId}:${credentials.SecretAccessKey}@mycluster.mongodb.net/${dbName}?retryWrites=true&w=majority`;
