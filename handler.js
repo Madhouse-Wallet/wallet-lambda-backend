@@ -63,13 +63,14 @@ module.exports.testMailClient = async (event) => {
 
         // Create SES client with role-based credentials
         const ses = new AWS.SES({
-            region: process.env.NEXT_PUBLIC_AWS_S3_REGION
+            // region: process.env.NEXT_PUBLIC_AWS_S3_REGION
+            region: "us-east-1"
         });
 
 
         const params = {
             Destination: {
-                ToAddresses: ["parvinder@yopmail.com"],
+                ToAddresses: ["parvindertest@yopmail.com"],
             },
             Message: {
                 Body: {
@@ -77,7 +78,7 @@ module.exports.testMailClient = async (event) => {
                 },
                 Subject: { Data: "Test Email" },
             },
-            Source: "madhouse@ondemandcreations.com", // Must be a verified SES identity
+            Source: "info@madhousewallet.com", // Must be a verified SES identity
         };
 
         try {
