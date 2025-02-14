@@ -25,9 +25,10 @@ module.exports.testdbConnection = async (event) => {
             RoleSessionName: 'AccessMongoDB'
         };
         const credentials = await sts.assumeRole(params).promise();
+        console.log("credentials -->", credentials)
 //@madhouse-wallet.91du5.mongodb.net
-        // Connect to MongoDB Atlas
-        const uri = `mongodb+srv://${credentials.AccessKeyId}:${credentials.SecretAccessKey}@madhouse-wallet.91du5.mongodb.net/${dbName}?retryWrites=true&w=majority`;
+        // Connect to MongoDB Atlas ${encodeURIComponent(credentials.Credentials.AccessKeyId)
+        const uri = `mongodb+srv://${encodeURIComponent(credentials.Credentials.AccessKeyId)}:${encodeURIComponent(credentials.Credentials.SecretAccessKey)}@madhouse-wallet.91du5.mongodb.net/${dbName}?retryWrites=true&w=majority`;
         console.log("uri",uri)
         const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
         await client.connect();
