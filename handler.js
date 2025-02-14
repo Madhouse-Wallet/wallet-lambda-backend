@@ -26,16 +26,31 @@ module.exports.testdbConnection = async (event) => {
         };
         const credentials = await sts.assumeRole(params).promise();
         console.log("credentials -->", credentials)
-//@madhouse-wallet.91du5.mongodb.net
+        //@madhouse-wallet.91du5.mongodb.net
         // Connect to MongoDB Atlas ${encodeURIComponent(credentials.Credentials.AccessKeyId)
-        const uri = `mongodb+srv://${encodeURIComponent(credentials.Credentials.AccessKeyId)}:${encodeURIComponent(credentials.Credentials.SecretAccessKey)}@madhouse-wallet.91du5.mongodb.net/${dbName}?retryWrites=true&w=majority`;
-        console.log("uri",uri)
+        // const uri = `mongodb+srv://${encodeURIComponent(credentials.Credentials.AccessKeyId)}:${encodeURIComponent(credentials.Credentials.SecretAccessKey)}@madhouse-wallet.91du5.mongodb.net/${dbName}?retryWrites=true&w=majority`;
+
+
+
+        // Encode credentials for URL safety
+        const accessKeyId = encodeURIComponent(credentials.Credentials.AccessKeyId);
+        const secretAccessKey = encodeURIComponent(credentials.Credentials.SecretAccessKey);
+        const sessionToken = encodeURIComponent(credentials.Credentials.SessionToken);
+
+        // MongoDB Atlas connection URI with AWS IAM authentication
+        const uri = `mongodb+srv://${accessKeyId}:${secretAccessKey}@madhouse-wallet.91du5.mongodb.net/${dbName}?authSource=$external&authMechanism=MONGODB-AWS&authMechanismProperties=AWS_SESSION_TOKEN:${sessionToken}`;
+
+        console.log("MongoDB Connection URI:", uri);
+
+
+
+        console.log("uri", uri)
         const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
         await client.connect();
 
         // Get user's access privileges
         const db = client.db(dbName);
-        console.log("db==>",db)
+        console.log("db==>", db)
         // const user = await db.collection('users').findOne({ username: username });
         // const privileges = user.privileges;
 
