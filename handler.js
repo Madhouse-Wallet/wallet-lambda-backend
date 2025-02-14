@@ -43,7 +43,6 @@ module.exports.testdbConnection = async (event) => {
         console.log("MongoDB Connection URI:", uri);
 
 
-
         console.log("uri", uri)
         const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
         await client.connect();

@@ -11,6 +11,7 @@
   "dependencies": {
     "async": "^3.2.0",
     "aws-sdk": "^2.1692.0",
+    "aws4": "^1.13.2",
     "dotenv": "^16.4.5",
     "esbuild": "^0.24.2",
     "ethers": "5.7.2",
