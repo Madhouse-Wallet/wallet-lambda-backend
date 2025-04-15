@@ -46,6 +46,46 @@ functions:
           method: GET
           cors: true
 
+  liquidSwap:
+    timeout: 900
+    memorySize: 2048
+    handler: handler.liquidSwap
+    #environment:
+    #  CODE_SIGNING_PROFILE_ARN: ${env:CODE_SIGNING_PROFILE_ARN}  # Pass the ARN to function
+    events:
+      - httpApi:
+          path: /api/v1/liquidSwap
+          method: POST
+          cors: true
+
+          
+
+  requestQuote:
+    timeout: 900
+    memorySize: 2048
+    handler: handler.requestQuote
+    #environment:
+    #  CODE_SIGNING_PROFILE_ARN: ${env:CODE_SIGNING_PROFILE_ARN}  # Pass the ARN to function
+    events:
+      - httpApi:
+          path: /api/v1/requestQuote
+          method: POST
+          cors: true
+
+
+          
+  createFixedShift:
+    timeout: 900
+    memorySize: 2048
+    handler: handler.createFixedShift
+    #environment:
+    #  CODE_SIGNING_PROFILE_ARN: ${env:CODE_SIGNING_PROFILE_ARN}  # Pass the ARN to function
+    events:
+      - httpApi:
+          path: /api/v1/createFixedShift
+          method: POST
+          cors: true
+
   testdbConnection:
     timeout: 900
     memorySize: 2048
