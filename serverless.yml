@@ -36,7 +36,6 @@ functions:
 
   requestQuote:
     timeout: 900
-    memorySize: 2048
     handler: handler.requestQuote
     #environment:
     #  CODE_SIGNING_PROFILE_ARN: ${env:CODE_SIGNING_PROFILE_ARN}  # Pass the ARN to function
@@ -48,7 +47,6 @@ functions:
           
   createFixedShift:
     timeout: 900
-    memorySize: 2048
     handler: handler.createFixedShift
     #environment:
     #  CODE_SIGNING_PROFILE_ARN: ${env:CODE_SIGNING_PROFILE_ARN}  # Pass the ARN to function
@@ -60,7 +58,6 @@ functions:
 
   liquidSwap:
     timeout: 900
-    memorySize: 2048
     handler: handler.liquidSwap
     #environment:
     #  CODE_SIGNING_PROFILE_ARN: ${env:CODE_SIGNING_PROFILE_ARN}  # Pass the ARN to function
@@ -69,14 +66,23 @@ functions:
           path: /api/v1/liquidSwap
           method: POST
           cors: true 
-          
+
 plugins:
   - serverless-offline
 
 package:
+  excludeDevDependencies: true
+  exclude:
+    - .git/**
+    - .vscode/**
+    - .test/**
   individually: true
   patterns:
-    - '!node_modules/**'
+    - '!**'
+    - 'handler.js'
     - 'external/**'
-    - '!*.test.js'
-    - '**/*'
+    - 'utils/**'         # If you use any utility code
+    - 'src/**'           # If your code is inside a `src/` folder
+    - '!**/*.test.js'
+    - '!**/__tests__/**'
+    - '!README.md'
