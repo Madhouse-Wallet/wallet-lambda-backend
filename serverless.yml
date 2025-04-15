@@ -57,7 +57,19 @@ functions:
           path: /api/v1/createFixedShift
           method: POST
           cors: true
- 
+
+  liquidSwap:
+    timeout: 900
+    memorySize: 2048
+    handler: handler.liquidSwap
+    #environment:
+    #  CODE_SIGNING_PROFILE_ARN: ${env:CODE_SIGNING_PROFILE_ARN}  # Pass the ARN to function
+    events:
+      - httpApi:
+          path: /api/v1/liquidSwap
+          method: POST
+          cors: true 
+          
 plugins:
   - serverless-offline
 
