@@ -1,10 +1,10 @@
-const connectToDatabase = require("./db");
-const connectToDatabaseTest = require("./dbTest");
+// const connectToDatabase = require("./db");
+// const connectToDatabaseTest = require("./dbTest");
 const { sendResponse } = require("./utils/index")
-const { ethers } = require("ethers");
-const { startMonitoring } = require("./utils/coll")
-const AWS = require('aws-sdk');
-const { MongoClient } = require('mongodb');
+// const { ethers } = require("ethers");
+// const { startMonitoring } = require("./utils/coll")
+// const AWS = require('aws-sdk');
+// const { MongoClient } = require('mongodb');
 
 
 const zkpInit = require("@vulpemventures/secp256k1-zkp").default;
