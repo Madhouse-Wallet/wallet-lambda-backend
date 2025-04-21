@@ -82,18 +82,24 @@ plugins:
   - serverless-offline
 
 package:
+  individually: true
   excludeDevDependencies: true
   exclude:
     - .git/**
     - .vscode/**
     - .test/**
-  individually: true
   patterns:
     - '!**'
     - 'handler.js'
     - 'external/**'
-    - 'utils/**'         # If you use any utility code
-    - 'src/**'           # If your code is inside a `src/` folder
+    - 'utils/**'
+    - 'src/**'
+    - 'node_modules/@vulpemventures/**'        # ✅ include native module
+    - 'node_modules/bindings/**'               # ✅ bindings helper
+    - 'node_modules/nan/**'                    # ✅ native addon helper
+    - 'node_modules/node-addon-api/**'         # ✅ N-API helper (if used)
+    - 'node_modules/ref-napi/**'               # ✅ used by some native libs
+    - 'package.json'                           # always include this
     - '!**/*.test.js'
     - '!**/__tests__/**'
     - '!README.md'
