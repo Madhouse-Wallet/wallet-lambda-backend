@@ -67,6 +67,17 @@ functions:
           method: POST
           cors: true 
 
+  refundBitcoinAddress: 
+    timeout: 900
+    handler: handler.refundBitcoinAddress
+    #environment:
+    #  CODE_SIGNING_PROFILE_ARN: ${env:CODE_SIGNING_PROFILE_ARN}  # Pass the ARN to function
+    events:
+      - httpApi:
+          path: /api/v1/refundBitcoinAddress
+          method: POST
+          cors: true
+
 plugins:
   - serverless-offline
 

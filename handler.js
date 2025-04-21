@@ -37,12 +37,12 @@ const {
 module.exports.liquidSwap = async (event) => {
     try {
         let bodyData = JSON.parse(event.body);
-        console.log("invoiceAmount",event.body, event.body?.invoiceAmount, bodyData?.invoiceAmount );
+        console.log("invoiceAmount", event.body, event.body?.invoiceAmount, bodyData?.invoiceAmount);
         const { invoiceAmount, destinationAddress } = bodyData;
 
         const ENDPOINT = "https://api.boltz.exchange";
-        const WEBSOCKET_ENDPOINT = "wss://api.boltz.exchange/v2/ws" ;
-        
+        const WEBSOCKET_ENDPOINT = "wss://api.boltz.exchange/v2/ws";
+
         const NETWORK = networks.regtest; // Using Liquid network
 
 
@@ -240,7 +240,7 @@ module.exports.liquidSwap = async (event) => {
 
 module.exports.requestQuote = async (event) => {
     try {
-        
+
         // Fixed IP address as used in curl commands
         const FIXED_IP_ADDRESS = "201.144.119.146";
         const secretKey = event.headers['x-sideshift-secret'];
@@ -292,5 +292,62 @@ module.exports.createFixedShift = async (event) => {
     } catch (error) {
         console.log("connectToDatabaseTest-->", error)
         return sendResponse(500, { message: "Internal server error", status: "failure", error: error.message })
+    }
+};
+
+
+
+module.exports.refundBitcoinAddress = async (event) => {
+    try {
+        console.log("line-170");
+        const FIXED_IP_ADDRESS = "201.144.119.146";
+        const secretKey = "ec36c6e251ff8355154bd88dcfe5e249";
+        const affiliateId = "UHNxssRFo";
+        let bodyData = JSON.parse(event.body);
+        const { usdcAmount, bitcoinAddress } = bodyData;
+
+        // Step 1: Request a quote
+        const quoteResponse = await axios.post(
+            "https://sideshift.ai/api/v2/quotes",
+            {
+                affiliateId,
+                depositCoin: "USDC",
+                depositNetwork: "base",
+                settleCoin: "BTC",
+                settleNetwork: "bitcoin",
+                depositAmount: usdcAmount,
+            },
+            {
+                headers: {
+                    "Content-Type": "application/json",
+                    "x-sideshift-secret": secretKey,
+                    "x-user-ip": FIXED_IP_ADDRESS,
+                },
+            }
+        );
+        const quoteData = quoteResponse.data;
+        // Step 2: Create a fixed shift using the quote
+        // Step 2: Create a fixed shift using the quote
+        const shiftResponse = await axios.post(
+            "https://sideshift.ai/api/v2/shifts/fixed",
+            {
+                settleAddress: bitcoinAddress,
+                affiliateId,
+                quoteId: quoteData.id,
+            },
+            {
+                headers: {
+                    "Content-Type": "application/json",
+                    "x-sideshift-secret": secretKey,
+                    "x-user-ip": FIXED_IP_ADDRESS,
+                },
+            }
+        );
+        // await connectToDatabaseTest();
+        return sendResponse(200, { message: "Successfully!", status: "success", data: shiftResponse.data })
+    } catch (error) {
+        const sideshiftError = error.response.data?.error || "Unknown error from Sideshift";
+        // console.error("Sideshift API error:", sideshiftError);
+        return sendResponse(500, { message: "Internal server error", status: "failure", sideshiftError})
     }
 };
