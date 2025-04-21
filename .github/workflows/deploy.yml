@@ -32,10 +32,10 @@ jobs:
         role-to-assume: ${{ secrets.AWS_DEV_GITHUB_ACTION_ROLE }}
         aws-region: ${{ secrets.AWS_REGION }}
 
-    - name: Serverless remove
+    - name: Serverless deploy
       uses: serverless/github-action@v3.2.0
       with:
-        args: remove --stage production
+        args: deploy --stage production
       env:
         AWS_REGION: ${{ secrets.AWS_REGION }}
         MONGODB_URI: ${{ secrets.MONGODB_URI }} 
