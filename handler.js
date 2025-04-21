@@ -1,4 +1,12 @@
+const connectToDatabase = require("./db");
+const connectToDatabaseTest = require("./dbTest");
 const { sendResponse } = require("./utils/index")
+const { ethers } = require("ethers");
+const { startMonitoring } = require("./utils/coll")
+const AWS = require('aws-sdk');
+const { MongoClient } = require('mongodb');
+
+
 const zkpInit = require("@vulpemventures/secp256k1-zkp").default;
 const axios = require("axios");
 const { randomBytes } = require("crypto");
@@ -19,8 +27,6 @@ const {
     init,
 } = require("boltz-core/dist/lib/liquid");
 
-
-;
 
 
 
