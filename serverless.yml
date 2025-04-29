@@ -74,8 +74,10 @@ plugins:
 
 package:
   excludeDevDependencies: true
+  individually: true
   exclude:
     - .git/**
     - .vscode/**
     - .test/**
     - node_modules/aws-sdk/**
+
