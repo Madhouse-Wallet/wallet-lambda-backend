@@ -87,7 +87,7 @@ package:
     - .git/**
     - .vscode/**
     - .test/**
-  individually: false
+  individually: true
   patterns:
     - '!**'
     - 'handler.js'
