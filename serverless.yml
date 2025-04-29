@@ -87,13 +87,15 @@ package:
     - .git/**
     - .vscode/**
     - .test/**
-  individually: true
+  individually: false
   patterns:
     - '!**'
     - 'handler.js'
     - 'external/**'
-    - 'utils/**'         # If you use any utility code
-    - 'src/**'           # If your code is inside a `src/` folder
+    - 'utils/**'
+    - 'src/**'
+    - 'node_modules/**'   # 👈 Add this
     - '!**/*.test.js'
     - '!**/__tests__/**'
     - '!README.md'
+
