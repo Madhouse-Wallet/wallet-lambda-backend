@@ -94,7 +94,8 @@ package:
     - 'external/**'
     - 'utils/**'
     - 'src/**'
-    - 'node_modules/**'   # 👈 Add this
+    - 'node_modules/**'
+    - '!node_modules/aws-sdk/**' # already available in Lambda runtime
     - '!**/*.test.js'
     - '!**/__tests__/**'
     - '!README.md'
