@@ -19,6 +19,7 @@
     "dotenv": "^16.4.5",
     "esbuild": "^0.24.2",
     "ethers": "5.7.2",
+    "liquidjs-lib": "^6.0.2-liquid.37",
     "mongoose": "^6.5.3",
     "serverless": "^4.4.11",
     "serverless-offline": "^14.3.4",
