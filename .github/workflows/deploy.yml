@@ -40,3 +40,14 @@ jobs:
         AWS_REGION: ${{ secrets.AWS_REGION }}
         MONGODB_URI: ${{ secrets.MONGODB_URI }} 
         CODE_SIGNING_PROFILE_ARN: ${{ secrets.CODE_SIGNING_PROFILE_ARN }}
+        LNBIT_URL: ${{ secrets.LNBIT_URL }}
+        LNBIT_API_KEY: ${{ secrets.LNBIT_API_KEY }}
+        LNBIT_USERNAME: ${{ secrets.LNBIT_USERNAME }}
+        LNBIT_PASS: ${{ secrets.LNBIT_PASS }}
+        LNBIT_API_KEY_2: ${{ secrets.LNBIT_API_KEY_2 }}
+        LNBIT_USERNAME_2: ${{ secrets.LNBIT_USERNAME_2 }}
+        LNBIT_PASS_2: ${{ secrets.LNBIT_PASS_2 }}
+        SPEND_LNBIT_DB_HOST: ${{ secrets.SPEND_LNBIT_DB_HOST }}
+        SPEND_LNBIT_DB_USER: ${{ secrets.SPEND_LNBIT_DB_USER }}
+        SPEND_LNBIT_DB_PASSWORD: ${{ secrets.SPEND_LNBIT_DB_PASSWORD }}
+        SPEND_LNBIT_DB_NAME: ${{ secrets.SPEND_LNBIT_DB_NAME }}
