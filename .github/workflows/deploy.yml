@@ -41,6 +41,7 @@ jobs:
         MONGODB_URI: ${{ secrets.MONGODB_URI }} 
         CODE_SIGNING_PROFILE_ARN: ${{ secrets.CODE_SIGNING_PROFILE_ARN }}
         LNBIT_URL: ${{ secrets.LNBIT_URL }}
+        LNBIT_URL_2: ${{ secrets.LNBIT_URL_2 }}
         LNBIT_API_KEY: ${{ secrets.LNBIT_API_KEY }}
         LNBIT_USERNAME: ${{ secrets.LNBIT_USERNAME }}
         LNBIT_PASS: ${{ secrets.LNBIT_PASS }}
