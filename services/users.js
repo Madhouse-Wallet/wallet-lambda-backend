@@ -1,18 +1,18 @@
 'use strict'
-const collateralDataModel = require('../model/collateralData');
+const usersModel = require('../model/users');
 
 module.exports = {
     findOne: async (data, options = {}) => {
-        return await collateralDataModel.findOne(data, options);
+        return await usersModel.findOne(data, options);
     },
     createOne: async (data, options = {}) => {
-        return await collateralDataModel.create(data);
+        return await usersModel.create(data);
     },
     findOneAndUpdate: async (find, data) => {
-        return await collateralDataModel.findOneAndUpdate(find, data, { new: true });
+        return await usersModel.findOneAndUpdate(find, data, { new: true });
     },
     findOneAndUpdateUpsert: async (find, data) => {
-        return await collateralDataModel.findOneAndUpdate(find, data, {
+        return await usersModel.findOneAndUpdate(find, data, {
             upsert: true,
             new: true,
         });
@@ -23,7 +23,7 @@ module.exports = {
             return false
         }
         const token = authHeader.split(" ")[1];
-        const user = await collateralDataModel.findOne({
+        const user = await usersModel.findOne({
             verifyToken: token,
         });
         if (user) {
@@ -38,7 +38,7 @@ module.exports = {
             return false
         }
         const token = authHeader.split(" ")[1];
-        const user = await collateralDataModel.findOne({
+        const user = await usersModel.findOne({
             authToken: token,
         });
         if (user) {

@@ -1,5 +1,5 @@
 service: madhouse-backend
-frameworkVersion: "3"
+frameworkVersion: "4"
 
 provider:
   name: aws
@@ -7,6 +7,18 @@ provider:
   region: ${env:AWS_REGION}
   environment:
     MONGODB_URI: ${env:MONGODB_URI}
+    LNBIT_URL: ${env:LNBIT_URL}
+    LNBIT_API_KEY: ${env:LNBIT_API_KEY}
+    LNBIT_USERNAME: ${env:LNBIT_USERNAME}
+    LNBIT_PASS: ${env:LNBIT_PASS}
+    LNBIT_URL_2: ${env:LNBIT_URL}
+    LNBIT_API_KEY_2: ${env:LNBIT_API_KEY_2}
+    LNBIT_USERNAME_2: ${env:LNBIT_USERNAME_2}
+    LNBIT_PASS_2: ${env:LNBIT_PASS_2}
+    SPEND_LNBIT_DB_HOST: ${env:SPEND_LNBIT_DB_HOST}
+    SPEND_LNBIT_DB_USER: ${env:SPEND_LNBIT_DB_USER}
+    SPEND_LNBIT_DB_PASSWORD: ${env:SPEND_LNBIT_DB_PASSWORD}
+    SPEND_LNBIT_DB_NAME: ${env:SPEND_LNBIT_DB_NAME}
     NODE_OPTIONS: --enable-source-maps
 
   iam:
@@ -33,42 +45,15 @@ provider:
           Resource: "*"
 
 functions:
-  requestQuote:
+  addlnbitUser:
     timeout: 900
-    handler: handler.requestQuote
+    handler: handler.addlnbitUser
     events:
       - httpApi:
-          path: /api/v1/requestQuote
+          path: /api/v1/addlnbitUser
           method: POST
           cors: true
-          
-  createFixedShift:
-    timeout: 900
-    handler: handler.createFixedShift
-    events:
-      - httpApi:
-          path: /api/v1/createFixedShift
-          method: POST
-          cors: true
-
-  liquidSwap:
-    timeout: 900
-    handler: handler.liquidSwap
-    events:
-      - httpApi:
-          path: /api/v1/liquidSwap
-          method: POST
-          cors: true 
-
-  refundBitcoinAddress: 
-    timeout: 900
-    handler: handler.refundBitcoinAddress
-    events:
-      - httpApi:
-          path: /api/v1/refundBitcoinAddress
-          method: POST
-          cors: true
-
+ 
 plugins:
   - serverless-offline
 

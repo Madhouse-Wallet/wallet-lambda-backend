@@ -9,20 +9,15 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@vulpemventures/secp256k1-zkp": "^3.2.1",
     "async": "^3.2.0",
     "aws-sdk": "^2.1692.0",
     "aws4": "^1.13.2",
-    "bip21": "^2.0.3",
-    "bolt11": "^1.4.1",
-    "boltz-core": "^2.2.2",
     "dotenv": "^16.4.5",
     "esbuild": "^0.24.2",
     "ethers": "5.7.2",
-    "liquidjs-lib": "^6.0.2-liquid.37",
     "mongoose": "^6.5.3",
-    "serverless": "^4.4.11",
-    "serverless-offline": "^14.3.4",
-    "tiny-secp256k1": "^2.2.3"
+    "pg": "^8.16.0",
+    "serverless": "^4.15.1",
+    "serverless-offline": "^14.3.4"
   }
 }
