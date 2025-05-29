@@ -30,7 +30,8 @@ const logIn = async (type = 1) => {
       }),
     });
     response = await response.json();
-    console.log("response login",response)
+    console.log("response login2 ", username,
+      password, backendUrl, type,  response)
     if (response?.access_token) {
       return {
         status: true,
