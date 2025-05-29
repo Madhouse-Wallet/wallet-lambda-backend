@@ -2,7 +2,7 @@
  
 
 
- 
+ require('dotenv').config();
 
 const logIn = async (type = 1) => {
   try {

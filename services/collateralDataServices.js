@@ -1,4 +1,7 @@
 'use strict'
+require('dotenv').config();
+
+
 const collateral = require('../model/collateral');
 
 module.exports = {

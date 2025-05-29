@@ -174,9 +174,9 @@ const createSplitPayment = async (wallet1: any, wallet2: any, apiKey1: any, apik
         let splitPaymentTarget1 = await splitPaymentTarget({
             "targets": [
                 {
-                    "wallet": process.env.NEXT_PUBLIC_SPLIT_PAYMENT_ADDRESS,
+                    "wallet": process.env.SPLIT_PAYMENT_ADDRESS,
                     "alias": "commision",
-                    "percent": process.env.NEXT_PUBLIC_SPLIT_PAYMENT_PERCENTAGE,
+                    "percent": process.env.SPLIT_PAYMENT_PERCENTAGE,
                     "source": {
                         "id": wallet1,
                         "adminkey": apiKey1
@@ -191,9 +191,9 @@ const createSplitPayment = async (wallet1: any, wallet2: any, apiKey1: any, apik
         let splitPaymentTarget2 = await splitPaymentTarget({
             "targets": [
                 {
-                    "wallet": process.env.NEXT_PUBLIC_SPLIT_PAYMENT_ADDRESS,
+                    "wallet": process.env.SPLIT_PAYMENT_ADDRESS,
                     "alias": "commision",
-                    "percent": process.env.NEXT_PUBLIC_SPLIT_PAYMENT_PERCENTAGE,
+                    "percent": process.env.SPLIT_PAYMENT_PERCENTAGE,
                     "source": {
                         "id": wallet2,
                         "adminkey": apikey2

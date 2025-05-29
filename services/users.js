@@ -1,4 +1,5 @@
 'use strict'
+require('dotenv').config();
 const usersModel = require('../model/users');
 
 module.exports = {

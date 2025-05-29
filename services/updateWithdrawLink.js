@@ -1,3 +1,5 @@
+require('dotenv').config();
+
 // lib/db/updateWithdrawLink.js
 const { Pool } = require('pg');
 

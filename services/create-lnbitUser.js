@@ -1,3 +1,6 @@
+
+require('dotenv').config();
+
 const {
     logIn,
     getUser,
@@ -141,9 +144,9 @@ const {
   
       let split1 = await splitPaymentTarget({
         targets: [{
-          wallet: process.env.NEXT_PUBLIC_SPLIT_PAYMENT_ADDRESS,
+          wallet: process.env.SPLIT_PAYMENT_ADDRESS,
           alias: "commision",
-          percent: process.env.NEXT_PUBLIC_SPLIT_PAYMENT_PERCENTAGE,
+          percent: process.env.SPLIT_PAYMENT_PERCENTAGE,
           source: { id: wallet1, adminkey: apiKey1 }
         }]
       }, apiKey1, token, accountType);
@@ -151,9 +154,9 @@ const {
   
       let split2 = await splitPaymentTarget({
         targets: [{
-          wallet: process.env.NEXT_PUBLIC_SPLIT_PAYMENT_ADDRESS,
+          wallet: process.env.SPLIT_PAYMENT_ADDRESS,
           alias: "commision",
-          percent: process.env.NEXT_PUBLIC_SPLIT_PAYMENT_PERCENTAGE,
+          percent: process.env.SPLIT_PAYMENT_PERCENTAGE,
           source: { id: wallet2, adminkey: apikey2 }
         }]
       }, apikey2, token, accountType);
