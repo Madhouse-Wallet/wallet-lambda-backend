@@ -23,7 +23,7 @@ module.exports.addlnbitUser = async (event) => {
     try {
         let bodyData = JSON.parse(event.body);
 
-        const { madhouseWallet, email, liquidBitcoinWallet, bitcoinWallet, provisionlnbitType
+        const { madhouseWallet, email, liquidBitcoinWallet, bitcoinWallet, provisionlnbitType, refund_address1 = ""
         } = bodyData;
         await connectToDatabase();
 
