@@ -17,7 +17,7 @@ const pool = new Pool({
  * @param {string} wallet - Wallet value to match
  * @param {object} updates - Key-value pairs of columns to update
  * @returns {Promise<object>} - The updated row
- */
+ */ 
 const updateWithdrawLinkByWallet = async (wallet, updates) => {
   try {
     if (!wallet || typeof updates !== 'object' || !Object.keys(updates).length) {
