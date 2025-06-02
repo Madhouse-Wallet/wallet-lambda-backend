@@ -12,6 +12,12 @@ const logIn = async (type = 1) => {
     console.log("process.env.LNBIT_URL",process.env.LNBIT_URL)
     console.log("process.env.LNBIT_URL_2",process.env.LNBIT_URL_2)
 
+    console.log("process.env.LNBIT_USERNAME",process.env.LNBIT_USERNAME)
+    console.log("process.env.LNBIT_PASS",process.env.LNBIT_PASS)
+
+    console.log("process.env.LNBIT_USERNAME_2",process.env.LNBIT_USERNAME_2)
+    console.log("process.env.LNBIT_PASS2",process.env.LNBIT_PASS_2)
+
     if (type == 1) {
       backendUrl = process.env.LNBIT_URL;
       username = process.env.LNBIT_USERNAME;

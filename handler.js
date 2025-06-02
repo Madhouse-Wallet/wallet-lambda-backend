@@ -257,6 +257,14 @@ module.exports.testlnbit1 = async (event) => {
         let backendUrl = process.env.LNBIT_URL_2;
         let username = process.env.LNBIT_USERNAME_2;
         let password = process.env.LNBIT_PASS_2;
+        console.log("process.env.LNBIT_URL",process.env.LNBIT_URL)
+        console.log("process.env.LNBIT_URL_2",process.env.LNBIT_URL_2)
+    
+        console.log("process.env.LNBIT_USERNAME",process.env.LNBIT_USERNAME)
+        console.log("process.env.LNBIT_PASS",process.env.LNBIT_PASS)
+    
+        console.log("process.env.LNBIT_USERNAME_2",process.env.LNBIT_USERNAME_2)
+        console.log("process.env.LNBIT_PASS2",process.env.LNBIT_PASS_2)
         console.log("backendUrl-->",backendUrl)
         let response = await fetch(`${backendUrl}api/v1/auth`, {
             method: "POST",
