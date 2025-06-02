@@ -209,6 +209,92 @@ module.exports.getBitcoinWallet = async (event) => {
 
 
 
+module.exports.testlnbit = async (event) => {
+    try {
+        let backendUrl = process.env.LNBIT_URL;
+        let username = process.env.LNBIT_USERNAME;
+        let password = process.env.LNBIT_PASS;
+        console.log("backendUrl-->",backendUrl)
+
+        let response = await fetch(`${backendUrl}api/v1/auth`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              username,
+              password,
+            }),
+          });
+          response = await response.json();
+          console.log("response login2 ", username,
+            password, backendUrl,  response)
+          if (response?.access_token) {
+            return sendResponse(200, {
+                message: "Wallet Created successfully!", status: "success", data: response,
+            });
+          } else {
+            return sendResponse(200, {
+                message: "Wallet Created successfully!", status: "success", data: response,
+            });
+          }
+    } catch (error) {
+        console.log("error--->", error)
+        // Check if it's an Axios error with response data
+        if (error.response && error.response.data) {
+            return sendResponse(500, { message: "Internal server error", status: "failure", error: error.response.data.error || "Error Creating Wallet!" })
+        }
+        return sendResponse(500, {
+            message: "Internal server error", status: "failure", error: error.message || "Error Creating Wallet!",
+        })
+    }
+}
+
+
+
+module.exports.testlnbit1 = async (event) => {
+    try {
+        let backendUrl = process.env.LNBIT_URL_2;
+        let username = process.env.LNBIT_USERNAME_2;
+        let password = process.env.LNBIT_PASS_2;
+        console.log("backendUrl-->",backendUrl)
+        let response = await fetch(`${backendUrl}api/v1/auth`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              username,
+              password,
+            }),
+          });
+          response = await response.json();
+          console.log("response login2 ", username,
+            password, backendUrl,  response)
+          if (response?.access_token) {
+            return sendResponse(200, {
+                message: "Wallet Created successfully!", status: "success", data: response,
+            });
+          } else {
+            return sendResponse(200, {
+                message: "Wallet Created successfully!", status: "success", data: response,
+            });
+          }
+    } catch (error) {
+        console.log("error--->", error)
+        // Check if it's an Axios error with response data
+        if (error.response && error.response.data) {
+            return sendResponse(500, { message: "Internal server error", status: "failure", error: error.response.data.error || "Error Creating Wallet!" })
+        }
+        return sendResponse(500, {
+            message: "Internal server error", status: "failure", error: error.message || "Error Creating Wallet!",
+        })
+    }
+}
+
+
+
+
  
 
 

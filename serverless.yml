@@ -1,5 +1,5 @@
 service: madhouse-backend
-frameworkVersion: "3"
+frameworkVersion: "4"
 
 provider:
   name: aws
@@ -91,6 +91,22 @@ functions:
     events:
       - httpApi:
           path: /api/v1/getBitcoinWallet
+          method: POST
+          cors: true
+  testlnbit:
+    timeout: 900
+    handler: handler.testlnbit
+    events:
+      - httpApi:
+          path: /api/v1/testlnbit
+          method: POST
+          cors: true
+  testlnbit1:
+    timeout: 900
+    handler: handler.testlnbit1
+    events:
+      - httpApi:
+          path: /api/v1/testlnbit1
           method: POST
           cors: true
  
