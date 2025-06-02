@@ -10,7 +10,6 @@ provider:
       - sg-07eb9a1adc283a497
     subnetIds:
       - subnet-0d8399bd43aef158a
-      - subnet-0c1dc87506ec0f93a
   environment:
     MONGODB_URI: ${env:MONGODB_URI}
     LNBIT_URL: ${env:LNBIT_URL}
