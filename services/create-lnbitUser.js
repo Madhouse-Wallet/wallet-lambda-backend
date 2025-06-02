@@ -14,7 +14,7 @@ const {
     withdrawLinkCreate
   } = require("./lnbit");
   
-  const { updateWithdrawLinkByWallet } = require("./updateWithdrawLink");
+  // const { updateWithdrawLinkByWallet } = require("./updateWithdrawLink");
   const UsersModel = require('./users');
   
   // Create TPoS Links
@@ -283,7 +283,7 @@ const {
         });
       }
   
-      updateWithdrawLinkByWallet(walletId, { uses: 100000000 });
+      // updateWithdrawLinkByWallet(walletId, { uses: 100000000 });
       return refund_address;
     } catch (error) {
       console.log("Error in addLnbitSpendUser:", error);

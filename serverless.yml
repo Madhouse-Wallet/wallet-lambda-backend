@@ -5,6 +5,12 @@ provider:
   name: aws
   runtime: nodejs20.x
   region: ${env:AWS_REGION}
+  vpc:
+    securityGroupIds:
+      - sg-07eb9a1adc283a497
+    subnetIds:
+      - subnet-0d8399bd43aef158a
+      - subnet-0c1dc87506ec0f93a
   environment:
     MONGODB_URI: ${env:MONGODB_URI}
     LNBIT_URL: ${env:LNBIT_URL}
@@ -53,6 +59,38 @@ functions:
     events:
       - httpApi:
           path: /api/v1/addlnbitUser
+          method: POST
+          cors: true
+  getUser:
+    timeout: 900
+    handler: handler.getUser
+    events:
+      - httpApi:
+          path: /api/v1/getUser
+          method: POST
+          cors: true
+  createUser:
+    timeout: 900
+    handler: handler.createUser
+    events:
+      - httpApi:
+          path: /api/v1/createUser
+          method: POST
+          cors: true
+  updtUser:
+    timeout: 900
+    handler: handler.updtUser
+    events:
+      - httpApi:
+          path: /api/v1/updtUser
+          method: POST
+          cors: true
+  getBitcoinWallet:
+    timeout: 900
+    handler: handler.getBitcoinWallet
+    events:
+      - httpApi:
+          path: /api/v1/getBitcoinWallet
           method: POST
           cors: true
  
