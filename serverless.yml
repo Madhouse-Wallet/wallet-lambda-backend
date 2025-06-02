@@ -93,6 +93,14 @@ functions:
           path: /api/v1/getBitcoinWallet
           method: POST
           cors: true
+  testLnbitUrl:
+    timeout: 900
+    handler: handler.testLnbitUrl
+    events:
+      - httpApi:
+          path: /api/v1/testLnbitUrl
+          method: POST
+          cors: true
  
 plugins:
   - serverless-offline

@@ -10,7 +10,10 @@ const { addLnbitTposUser, addLnbitSpendUser } = require('./services/create-lnbit
 const { createBitcoinWallet } = require('./services/generateBitcoinWallet.js');
 
 const UsersModel = require('./services/users.js');
+const {
+    logIn,
 
+} = require("./services/lnbit.js");
 
 function shortenAddress(address) {
     if (!address || address.length < 10) return address;
@@ -202,3 +205,58 @@ module.exports.getBitcoinWallet = async (event) => {
         })
     }
 }
+
+
+
+
+module.exports.testLnbitUrl = async (event) => {
+    try {
+        try {
+            let backendUrl = "";
+            let username = "";
+            let password = "";
+            backendUrl = "http://lnbits.madhousewallet.com/";
+            username = "suffescom";
+            password = "suffescom";
+
+
+            // Fixed IP address as used in curl commands
+            let response = await fetch(`${backendUrl}api/v1/auth`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    username,
+                    password,
+                }),
+            });
+            response = await response.json();
+            console.log("response login2 ", username,
+                password, backendUrl, response)
+            return sendResponse(200, {
+                message: "success", status: "success", data: {
+                    status: true,
+                    data: { token: response?.access_token },
+                },
+            })
+        } catch (error) {
+            console.error("lnbit login API Error:", error);
+            return sendResponse(500, {
+                message: "Internal server error", status: "failure", error: error.message || "Error Creating Wallet!",
+            })
+        }
+    } catch (error) {
+        console.log("error--->", error)
+        // Check if it's an Axios error with response data
+        if (error.response && error.response.data) {
+            return sendResponse(500, { message: "Internal server error", status: "failure", error: error.response.data.error || "Error Creating Wallet!" })
+        }
+        return sendResponse(500, {
+            message: "Internal server error", status: "failure", error: error.message || "Error Creating Wallet!",
+        })
+    }
+}
+
+
+
