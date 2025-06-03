@@ -96,7 +96,7 @@ const createLnurlpLink = async (username, wallet, apiKey, token, accountType) =>
       description: "send",
       min: 10,
       max: 10000000,
-      currency: null,
+      currency: "sat",
       username: username,
       wallet
     };
