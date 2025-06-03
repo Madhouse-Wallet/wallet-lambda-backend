@@ -96,11 +96,13 @@ const createLnurlpLink = async (username, wallet, apiKey, token, accountType) =>
       description: "send",
       min: 10,
       max: 10000000,
-      currency: "sat",
+      currency: null,
       username: username,
       wallet
     };
+    console.log("setting-->",setting)
     let lnurlp = await lnurlpCreate(setting, apiKey, token, accountType);
+    console.log("lnurlp-->",lnurlp)
     if (lnurlp?.status) result.createLnurlpLink1 = lnurlp.data;
 
     return result;
