@@ -255,7 +255,7 @@ const lnurlpCreate = async (data, apiKey, token, type = 1) => {
       backendUrl = process.env.LNBIT_URL_2;
     }
     // LNBIT_API_KEY  ,   process.env.LNBIT_URL
-    console.log("backendUrl-->",backendUrl, data)
+    console.log("backendUrl-->",backendUrl, data, token, apiKey)
     let response = await fetch(`${backendUrl}lnurlp/api/v1/links`, {
       method: "POST",
       headers: {
@@ -300,7 +300,7 @@ const withdrawLinkCreate = async (data, apiKey, token, type = 1) => {
       backendUrl = process.env.LNBIT_URL_2;
     }
     // LNBIT_API_KEY  ,   process.env.LNBIT_URL
-    console.log("backendUrl-->",backendUrl, data)
+    console.log("backendUrl-->",backendUrl, data, token, apiKey)
     let response = await fetch(`${backendUrl}withdraw/api/v1/links`, {
       method: "POST",
       headers: {
