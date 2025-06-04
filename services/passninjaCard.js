@@ -10,6 +10,10 @@ const googlepay = process.env.PASSNINJA_CARD_GOOGLE_PAY;
 
 const passNinjaClient = new PassNinjaClient(accountId, apiKey);
 
+console.log("accountId-->", accountId)
+console.log("apiKey-->", apiKey)
+console.log("applepay-->", applepay)
+console.log("googlepay-->", googlepay)
 
 const DEVICE_TYPE = {
     applepay: 'ptk_0x1dc',
@@ -19,6 +23,9 @@ const DEVICE_TYPE = {
 
 const createPass = async (WALLET_ADDRESS, type = "apple") => {
     try {
+        console.log("WALLET_ADDRESS-->", WALLET_ADDRESS)
+        console.log("type-->", type)
+
         const simplePassObject = await passNinjaClient.pass.create(
             (type == "apple") ? applepay : googlepay, // passType
             { 'nfc-message': WALLET_ADDRESS } // passData
