@@ -9,6 +9,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@passninja/passninja-js": "^0.6.0",
     "async": "^3.2.0",
     "aws-sdk": "^2.1692.0",
     "aws4": "^1.13.2",
