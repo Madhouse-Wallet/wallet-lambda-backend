@@ -11,7 +11,9 @@ const {
   userLogIn,
   splitPaymentTarget,
   lnurlpCreate,
-  withdrawLinkCreate
+  withdrawLinkCreate,
+  getWithdrawLinkCreate,
+  getPayLnurlpLink
 } = require("./lnbit");
 
 // const { updateWithdrawLinkByWallet } = require("./updateWithdrawLink");
@@ -100,9 +102,9 @@ const createLnurlpLink = async (username, wallet, apiKey, token, accountType) =>
       username: username,
       wallet
     };
-    console.log("setting-->",setting)
+    console.log("setting-->", setting)
     let lnurlp = await lnurlpCreate(setting, apiKey, token, accountType);
-    console.log("lnurlp-->",lnurlp)
+    console.log("lnurlp-->", lnurlp)
     if (lnurlp?.status) result.createLnurlpLink1 = lnurlp.data;
 
     return result;
@@ -269,22 +271,74 @@ const addLnbitSpendUser = async (madhouseWallet, email, accountType = 1, attempt
     });
     let lnaddress = await (newEmail.split('@')[0]);
     const lnurlp = await createLnurlpLink(lnaddress, walletId, adminKey, getUserToken, accountType);
-    if (lnurlp?.status) {
-      await UsersModel.findOneAndUpdate({ email }, {
-        $set: {
-          spendLnurlpLink: lnurlp.createLnurlpLink1 || {},
-          lnaddress: lnaddress + "@spend.madhousewallet.com"
-        }
-      });
-    }
-
     const withdraw = await createWithdrawLink(adminKey, getUserToken, accountType);
+    const getWithdrawLinks = await getWithdrawLinkCreate(adminKey, getUserToken, accountType);
+    if (getWithdrawLinks?.status) {
+      console.log(getWithdrawLinks.data.data, getWithdrawLinks.data.data?.length > 0)
+      if (getWithdrawLinks.data.data?.length > 0) {
+        await UsersModel.findOneAndUpdate({ email }, {
+          $set: {
+            spendLnurlpLink: getWithdrawLinks.data.data[0] || {},
+            lnaddress: lnaddress + "@spend.madhousewallet.com"
+          }
+        });
+      }
+    }
+    const getLnurlpLinks = await getPayLnurlpLink(adminKey, getUserToken, accountType);
+
+    if (getLnurlpLinks?.status) {
+      console.log(getLnurlpLinks.data, getLnurlpLinks.data?.length > 0)
+      if (getLnurlpLinks.data?.length > 0) {
+        await UsersModel.findOneAndUpdate({ email }, {
+          $set: {
+            spendWithdrawLink: getLnurlpLinks.data[0] || {}
+          }
+        });
+      }
+    }
+    // updateWithdrawLinkByWallet(walletId, { uses: 100000000 });
+    return refund_address;
+  } catch (error) {
+    console.log("Error in addLnbitSpendUser:", error);
+    return false;
+  }
+};
+
+
+
+
+
+
+const createLnbitSpendLnurlpLink = async (lnbitUserId, email, accountType = 1) => {
+  try {
+    const newEmail = email;
+    let refund_address = "";
+    console.log("account type", accountType)
+    const getToken = await logIn(accountType);
+    if (!getToken?.status) return false;
+
+    const token = getToken.data.token;
+
+    const getUserToken = (await userLogIn(accountType, lnbitUserId)).data.token;
+    const getUserData = await getUser(lnbitUserId, token, accountType);
+    if (!getUserData?.status) return false;
+
+    const walletId = getUserData.data.wallets[0].id;
+    refund_address = walletId;
+    const userId = getUserData.data.id;
+    const adminKey = getUserData.data.wallets[0].adminkey;
+
+    let lnaddress = await (newEmail.split('@')[0]);
+    console.log("lnaddressdsds", lnaddress, walletId, adminKey, getUserToken, accountType)
+    const withdraw = await getWithdrawLinkCreate(adminKey, getUserToken, accountType);
+    const lnurlpLink = await getPayLnurlpLink(adminKey, getUserToken, accountType);
+    console.log("withdraw-->", withdraw)
+    console.log("lnurlpLink-->", lnurlpLink)
     if (withdraw?.status) {
-      await UsersModel.findOneAndUpdate({ email }, {
-        $set: {
-          spendWithdrawLink: withdraw.createWithdrawLink1 || {}
-        }
-      });
+      console.log(withdraw.data.data, withdraw.data.data?.length)
+    }
+    if (lnurlpLink?.status) {
+      console.log(lnurlpLink.data)
     }
 
     // updateWithdrawLinkByWallet(walletId, { uses: 100000000 });
@@ -295,8 +349,8 @@ const addLnbitSpendUser = async (madhouseWallet, email, accountType = 1, attempt
   }
 };
 
-
 module.exports = {
   addLnbitSpendUser,
-  addLnbitTposUser
+  addLnbitTposUser,
+  createLnbitSpendLnurlpLink
 };

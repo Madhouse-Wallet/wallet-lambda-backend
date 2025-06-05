@@ -7,7 +7,6 @@ const { sendResponse } = require("./utils/index")
 // const AWS = require('aws-sdk');
 // const { MongoClient } = require('mongodb');
 const { addLnbitTposUser, addLnbitSpendUser } = require('./services/create-lnbitUser.js');
-const { createPass, deletePass } = require('./services/passninjaCard.js');
 const { createBitcoinWallet } = require('./services/generateBitcoinWallet.js');
 
 const UsersModel = require('./services/users.js');
@@ -187,8 +186,6 @@ module.exports.updtUser = async (event) => {
 }
 
 
-
-
 module.exports.getBitcoinWallet = async (event) => {
     try {
         let data = await createBitcoinWallet();
@@ -303,117 +300,11 @@ module.exports.testlnbit1 = async (event) => {
 
 
 
-module.exports.createCard = async (event) => {
-    try {
-        let bodyData = JSON.parse(event.body);
-        const { email, type = "apple" } = bodyData;
-        await connectToDatabase();
-        // Validate email
-        if (!email || typeof email !== 'string') {
-            return sendResponse(400, {
-                message: "Invalid email!", status: "failure", error: "Invalid email!",
-            })
-        }
-        let existingUser = await UsersModel.findOne(
-            { email: { $regex: new RegExp(`^${email}$`, 'i') } }
-        );
-        if (existingUser) {
-            if (existingUser?.creditCardPass) {
-                return sendResponse(400, {
-                    message: "Already Created!", status: "failure", error: "Already Created!",
-                })
-            } else {
-                let creditCardDetails = await createPass(existingUser?.wallet, type)
-                if (creditCardDetails?.status) {
-                    const existingUser = await UsersModel.findOneAndUpdate({ email }, {
-                        $set: {
-                            creditCardPass: creditCardDetails.data
-                        },
-                    }, { returnDocument: "after" });
-                    return sendResponse(200, {
-                        message: "User Created successfully!", status: "success", data: existingUser,
-                    });
-                } else {
-                    return sendResponse(400, {
-                        message: creditCardDetails?.msg, status: "failure", error: creditCardDetails?.msg
-                    })
-                }
-            }
-        } else {
-            return sendResponse(400, {
-                message: "User Does Not Exist!", status: "failure", error: "User Does Not Exist!",
-            })
-        }
-        // Return the initial response including the invoice
-    } catch (error) {
-        console.log("error--->", error)
-        // Check if it's an Axios error with response data
-        if (error.response && error.response.data) {
-            return sendResponse(500, { message: "Internal server error", status: "failure", error: error.response.data.error || "Error Finding User!" })
-        }
-        return sendResponse(500, {
-            message: "Internal server error", status: "failure", error: error.message || "Error Finding User!",
-        })
-    }
-}
+ 
 
 
 
 
-
-module.exports.deleteCard = async (event) => {
-    try {
-        let bodyData = JSON.parse(event.body);
-        const { email } = bodyData;
-        await connectToDatabase();
-        // Validate email
-        if (!email || typeof email !== 'string') {
-            return sendResponse(400, {
-                message: "Invalid email!", status: "failure", error: "Invalid email!",
-            })
-        }
-        let existingUser = await UsersModel.findOne(
-            { email: { $regex: new RegExp(`^${email}$`, 'i') } }
-        );
-        if (existingUser) {
-            if (existingUser?.creditCardPass) {
-                let deleteCardResults = await deletePass(existingUser?.creditCardPass?.serialNumber, existingUser?.creditCardPass?.type)
-                if (deleteCardResults?.status) {
-                    const existingUser = await UsersModel.findOneAndUpdate({ email }, {
-                        $set: {
-                            creditCardPass: ""
-                        },
-                    }, { returnDocument: "after" });
-                    return sendResponse(200, {
-                        message: "User Created successfully!", status: "success", data: existingUser,
-                    });
-                } else {
-                    return sendResponse(400, {
-                        message: deleteCardResults?.msg, status: "failure", error: deleteCardResults?.msg
-                    })
-                }
-            } else {
-                return sendResponse(400, {
-                    message: "No card Found!", status: "failure", error: "No card Found!",
-                })
-            }
-        } else {
-            return sendResponse(400, {
-                message: "User Does Not Exist!", status: "failure", error: "User Does Not Exist!",
-            })
-        }
-        // Return the initial response including the invoice
-    } catch (error) {
-        console.log("error--->", error)
-        // Check if it's an Axios error with response data
-        if (error.response && error.response.data) {
-            return sendResponse(500, { message: "Internal server error", status: "failure", error: error.response.data.error || "Error Finding User!" })
-        }
-        return sendResponse(500, {
-            message: "Internal server error", status: "failure", error: error.message || "Error Finding User!",
-        })
-    }
-}
 
 
 

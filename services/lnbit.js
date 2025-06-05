@@ -17,7 +17,7 @@ const logIn = async (type = 1) => {
 
     console.log("process.env.LNBIT_USERNAME_2",process.env.LNBIT_USERNAME_2)
     console.log("process.env.LNBIT_PASS2",process.env.LNBIT_PASS_2)
-
+console.log("type-->",type)
     if (type == 1) {
       backendUrl = process.env.LNBIT_URL;
       username = process.env.LNBIT_USERNAME;
@@ -313,6 +313,89 @@ const withdrawLinkCreate = async (data, apiKey, token, type = 1) => {
     response = await response.json();
     console.log("response withdrawLinkCreate ",response)
 
+    if (response?.detail) {
+      return {
+        status: false,
+        msg: response?.detail,
+      };
+    } else {
+      return {
+        status: true,
+        data: response,
+      };
+    }
+  } catch (error) {
+    console.error("lnbit login API Error:", error);
+    return {
+      status: false,
+      msg: "fetch failed",
+    };
+  }
+};
+
+
+
+
+// get lnurlp Withdraw link
+const getWithdrawLinkCreate = async (apiKey, token, type = 1) => {
+  try {
+    let backendUrl = "";
+    if (type == 1) {
+      backendUrl = process.env.LNBIT_URL;
+    } else {
+      backendUrl = process.env.LNBIT_URL_2;
+    }
+    // LNBIT_API_KEY  ,   process.env.LNBIT_URL
+    let response = await fetch(`${backendUrl}withdraw/api/v1/links?all_wallets=true&limit=10&offset=0`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Cookie: `cookie_access_token=${token}; is_lnbits_user_authorized=true`,
+        "X-API-KEY": apiKey,
+      },
+    });
+    response = await response.json();
+    if (response?.detail) {
+      return {
+        status: false,
+        msg: response?.detail,
+      };
+    } else {
+      return {
+        status: true,
+        data: response,
+      };
+    }
+  } catch (error) {
+    console.error("lnbit login API Error:", error);
+    return {
+      status: false,
+      msg: "fetch failed",
+    };
+  }
+};
+
+
+
+// get lnurlp Withdraw link
+const getPayLnurlpLink = async (apiKey, token, type = 1) => {
+  try {
+    let backendUrl = "";
+    if (type == 1) {
+      backendUrl = process.env.LNBIT_URL;
+    } else {
+      backendUrl = process.env.LNBIT_URL_2;
+    }
+    // LNBIT_API_KEY  ,   process.env.LNBIT_URL
+    let response = await fetch(`${backendUrl}lnurlp/api/v1/links?all_wallets=true`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Cookie: `cookie_access_token=${token}; is_lnbits_user_authorized=true`,
+        "X-API-KEY": apiKey,
+      },
+    });
+    response = await response.json();
     if (response?.detail) {
       return {
         status: false,
@@ -815,5 +898,7 @@ module.exports = {
   userLogIn,
   splitPaymentTarget,
   lnurlpCreate,
-  withdrawLinkCreate
+  withdrawLinkCreate,
+  getWithdrawLinkCreate,
+  getPayLnurlpLink
 };

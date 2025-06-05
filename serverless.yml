@@ -112,22 +112,6 @@ functions:
           path: /api/v1/testlnbit1
           method: POST
           cors: true
-  createCard:
-    timeout: 900
-    handler: handler.createCard
-    events:
-      - httpApi:
-          path: /api/v1/createCard
-          method: POST
-          cors: true
-  deleteCard:
-    timeout: 900
-    handler: handler.deleteCard
-    events:
-      - httpApi:
-          path: /api/v1/deleteCard
-          method: POST
-          cors: true
 
 plugins:
   - serverless-offline
