@@ -21,6 +21,7 @@ const userSchema = new mongoose.Schema(
     lnbitWalletId_3: String,
     spendLnurlpLink: { type: mongoose.Schema.Types.Mixed, default: {} },
     spendWithdrawLink: { type: mongoose.Schema.Types.Mixed, default: {} },
+    lnaddress: { type: String, default: "" },
     watermarkIndex: { type: Number, default: 0 },
     bgOpacity: { type: Number, default: 1 },
     backgroundIndex: { type: Number, default: 0 },
