@@ -235,7 +235,6 @@ const addLnbitTposUser = async (madhouseWallet, email, coinosis_address, bitcoin
   }
 };
 
-const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
 const addLnurlpAddress = async (adminKey, getUserToken, accountType, email, lnaddress) => {
   try {
@@ -305,6 +304,11 @@ const addLnbitSpendUser = async (madhouseWallet, email, accountType = 1, attempt
     let lnaddress = await (newEmail.split('@')[0]).replace(/[^a-zA-Z0-9]/g, '');
     const lnurlp = await createLnurlpLink(lnaddress, walletId, adminKey, getUserToken, accountType);
     const withdraw = await createWithdrawLink(adminKey, getUserToken, accountType);
+        await UsersModel.findOneAndUpdate({ email }, {
+          $set: {
+            lnaddress: lnaddress + "@spend.madhousewallet.com"
+          }
+        });
     addLnurlpAddress(adminKey, getUserToken, accountType, email,lnaddress);
     // updateWithdrawLinkByWallet(walletId, { uses: 100000000 });
     return refund_address;

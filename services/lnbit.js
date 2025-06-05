@@ -397,7 +397,7 @@ const getPayLnurlpLink = async (apiKey, token, type = 1) => {
       },
     });
     response = await response.json();
-        console.log("getPayLnurlpLink-->",response)
+        console.log("getPayLnurlpLink-->",backendUrl,response)
 
     if (response?.detail) {
       return {
