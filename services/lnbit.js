@@ -355,6 +355,7 @@ const getWithdrawLinkCreate = async (apiKey, token, type = 1) => {
       },
     });
     response = await response.json();
+    console.log("getWithdrawLinkCreate-->",response)
     if (response?.detail) {
       return {
         status: false,
@@ -396,6 +397,8 @@ const getPayLnurlpLink = async (apiKey, token, type = 1) => {
       },
     });
     response = await response.json();
+        console.log("getPayLnurlpLink-->",response)
+
     if (response?.detail) {
       return {
         status: false,

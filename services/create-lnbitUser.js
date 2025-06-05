@@ -235,6 +235,42 @@ const addLnbitTposUser = async (madhouseWallet, email, coinosis_address, bitcoin
   }
 };
 
+const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+
+const addLnurlpAddress = async (adminKey, getUserToken, accountType, email) => {
+  try {
+    await delay(4000);
+    const getLnurlpLinks = await getPayLnurlpLink(adminKey, getUserToken, accountType);
+    if (getLnurlpLinks?.status) {
+      console.log(getLnurlpLinks.data, getLnurlpLinks.data?.length > 0)
+      if (getLnurlpLinks.data?.length > 0) {
+        await UsersModel.findOneAndUpdate({ email }, {
+          $set: {
+            spendLnurlpLink: getLnurlpLinks.data[0] || {}
+          }
+        });
+      }
+    }
+    const getWithdrawLinks = await getWithdrawLinkCreate(adminKey, getUserToken, accountType);
+    if (getWithdrawLinks?.status) {
+      console.log(getWithdrawLinks.data.data, getWithdrawLinks.data.data?.length > 0)
+      if (getWithdrawLinks.data.data?.length > 0) {
+        await UsersModel.findOneAndUpdate({ email }, {
+          $set: {
+            spendWithdrawLink: getWithdrawLinks.data.data[0] || {},
+            lnaddress: lnaddress + "@spend.madhousewallet.com"
+          }
+        });
+      }
+    }
+
+
+
+  } catch (error) {
+    console.log()
+  }
+}
+
 // Add LNBits Spend User
 const addLnbitSpendUser = async (madhouseWallet, email, accountType = 1, attempt = 1) => {
   try {
@@ -269,33 +305,10 @@ const addLnbitSpendUser = async (madhouseWallet, email, accountType = 1, attempt
         lnbitAdminKey_3: adminKey
       }
     });
-    let lnaddress = await (newEmail.split('@')[0]);
+    let lnaddress = await (newEmail.split('@')[0]).replace(/[^a-zA-Z0-9]/g, '');
     const lnurlp = await createLnurlpLink(lnaddress, walletId, adminKey, getUserToken, accountType);
     const withdraw = await createWithdrawLink(adminKey, getUserToken, accountType);
-    const getWithdrawLinks = await getWithdrawLinkCreate(adminKey, getUserToken, accountType);
-    if (getWithdrawLinks?.status) {
-      console.log(getWithdrawLinks.data.data, getWithdrawLinks.data.data?.length > 0)
-      if (getWithdrawLinks.data.data?.length > 0) {
-        await UsersModel.findOneAndUpdate({ email }, {
-          $set: {
-            spendLnurlpLink: getWithdrawLinks.data.data[0] || {},
-            lnaddress: lnaddress + "@spend.madhousewallet.com"
-          }
-        });
-      }
-    }
-    const getLnurlpLinks = await getPayLnurlpLink(adminKey, getUserToken, accountType);
-
-    if (getLnurlpLinks?.status) {
-      console.log(getLnurlpLinks.data, getLnurlpLinks.data?.length > 0)
-      if (getLnurlpLinks.data?.length > 0) {
-        await UsersModel.findOneAndUpdate({ email }, {
-          $set: {
-            spendWithdrawLink: getLnurlpLinks.data[0] || {}
-          }
-        });
-      }
-    }
+    addLnurlpAddress(adminKey, getUserToken, accountType, email)
     // updateWithdrawLinkByWallet(walletId, { uses: 100000000 });
     return refund_address;
   } catch (error) {
