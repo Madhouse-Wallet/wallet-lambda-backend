@@ -806,10 +806,10 @@ const getPayments = async (
     // let apiKey = "";
 
     if (type === 1) {
-      backendUrl = process.env.NEXT_PUBLIC_LNBIT_URL;
+      backendUrl = process.env.LNBIT_URL;
       // apiKey = process.env.NEXT_PUBLIC_LNBIT_API_KEY;
     } else {
-      backendUrl = process.env.NEXT_PUBLIC_LNBIT_URL_2;
+      backendUrl = process.env.LNBIT_URL_2;
       // apiKey = process.env.NEXT_PUBLIC_LNBIT_API_KEY_2;
     }
 
