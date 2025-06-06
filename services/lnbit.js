@@ -283,6 +283,50 @@ const lnurlpCreate = async (data, apiKey, token, type = 1) => {
 
 
 
+
+
+// update updateLnurlp link
+const updateLnurlp = async (data, apiKey, token, type = 1, id) => {
+  try {
+    let backendUrl = "";
+    if (type == 1) {
+      backendUrl = process.env.LNBIT_URL;
+    } else {
+      backendUrl = process.env.LNBIT_URL_2;
+    }
+    // LNBIT_API_KEY  ,   process.env.LNBIT_URL
+    let response = await fetch(`${backendUrl}lnurlp/api/v1/links/${id}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        Cookie: `cookie_access_token=${token}; is_lnbits_user_authorized=true`,
+        "X-API-KEY": apiKey,
+      },
+      body: JSON.stringify(data),
+    });
+    response = await response.json();
+    if (response?.detail) {
+      return {
+        status: false,
+        msg: response?.detail,
+      };
+    } else {
+      return {
+        status: true,
+        data: response,
+      };
+    }
+  } catch (error) {
+    console.error("lnbit login API Error:", error);
+    return {
+      status: false,
+      msg: "fetch failed",
+    };
+  }
+};
+
+
+
 // create lnurlpCreate link
 const withdrawLinkCreate = async (data, apiKey, token, type = 1) => {
   try {
@@ -889,5 +933,6 @@ module.exports = {
   lnurlpCreate,
   withdrawLinkCreate,
   getWithdrawLinkCreate,
-  getPayLnurlpLink
+  getPayLnurlpLink,
+  updateLnurlp
 };

@@ -10,7 +10,7 @@ const { addLnbitTposUser, addLnbitSpendUser } = require('./services/create-lnbit
 const { createBitcoinWallet } = require('./services/generateBitcoinWallet.js');
 
 const UsersModel = require('./model/users.js');
-const { logIn, userLogIn, payInvoice, createTposInvoice, getPayments } = require("./services/lnbit.js");
+const { logIn, userLogIn, payInvoice, createTposInvoice, getPayments, updateLnurlp } = require("./services/lnbit.js");
 
 function shortenAddress(address) {
     if (!address || address.length < 10) return address;
@@ -418,6 +418,68 @@ module.exports.getTposTrxn = async (event) => {
         return sendResponse(500, {
             message: "Internal server error", status: "failure", error: error.message || "Error Paying Invoice",
         })
+    }
+}
+
+
+module.exports.updateLnAddress = async (event) => {
+    try {
+        let bodyData = JSON.parse(event.body);
+        const { email, newAddress } = bodyData;
+        await connectToDatabase();
+        // Validate email
+        if ((!email || typeof email !== 'string')) {
+            return sendResponse(400, {
+                message: "Invalid Params!", status: "failure", error: "Invalid Params!",
+            })
+        }
+        const existingUser = await UsersModel.findOne({
+            email: { $regex: new RegExp(`^${email}$`, 'i') },
+        });
+        if (existingUser?.spendLnurlpLink) {
+            let getToken = (await userLogIn(2, existingUser?.lnbitId_3));
+            if (getToken?.status) {
+                let token = getToken?.data?.token;
+                const udptUrl = (await updateLnurlp(
+                    {
+                        ...existingUser?.spendLnurlpLink,
+                        username: newAddress
+                    },
+                    existingUser?.lnbitAdminKey_3,
+                    token,
+                    2,
+                    existingUser?.spendLnurlpLink?.id
+                ));
+                if (udptUrl?.status) {
+                    const existingUser = await UsersModel.findOneAndUpdate({
+                        email: { $regex: new RegExp(`^${email}$`, 'i') }
+                    }, {
+                        spendLnurlpLink: udptUrl.data,
+                        lnaddress: newAddress
+                    }, { returnDocument: "after" });
+                    if (existingUser) {
+                        return sendResponse(200, {
+                            message: "Address updated successfully!", status: "success", data: existingUser,
+                        });
+                    } else {
+                        return sendResponse(400, {
+                            message: "No User Found!", status: "failure", error: "No User Found!",
+                        })
+                    }
+                } else {
+                    return sendResponse(400, { message: udptUrl.msg, status: "failure", error: udptUrl.msg })
+                }
+            } else {
+                return sendResponse(400, { message: getToken.msg, status: "failure", error: getToken.msg })
+            }
+        } else {
+            return sendResponse(400, {
+                message: "No User Found!", status: "failure", error: "No User Found!",
+            })
+        }
+        //updateLnurlp
+    } catch (error) {
+        console.log("update lnaddress-->", error)
     }
 }
 

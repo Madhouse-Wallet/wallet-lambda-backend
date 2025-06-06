@@ -136,6 +136,14 @@ functions:
           path: /api/v1/get-tpos-trxn
           method: POST
           cors: true
+  updateLnAddress:
+    timeout: 900
+    handler: handler.updateLnAddress
+    events:
+      - httpApi:
+          path: /api/v1/updt-lnaddress
+          method: POST
+          cors: true
 
 plugins:
   - serverless-offline
