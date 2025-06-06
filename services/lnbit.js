@@ -793,30 +793,31 @@ const getStats = async (walletId, token, type = 1) => {
 };
  
 const getPayments = async (
-  walletId,
   token,
   type = 1,
   fromDate = null,
   toDate = null,
-  tag = null
+  tag = null,
+  apiKey = null
 ) => {
-  console.log("line-510", fromDate, toDate);
+  console.log("line-510", fromDate, toDate, apiKey);
   try {
     let backendUrl = "";
-    let apiKey = "";
+    // let apiKey = "";
 
     if (type === 1) {
-      backendUrl = process.env.LNBIT_URL;
-      apiKey = process.env.LNBIT_API_KEY;
+      backendUrl = process.env.NEXT_PUBLIC_LNBIT_URL;
+      // apiKey = process.env.NEXT_PUBLIC_LNBIT_API_KEY;
     } else {
-      backendUrl = process.env.LNBIT_URL_2;
-      apiKey = process.env.LNBIT_API_KEY_2;
+      backendUrl = process.env.NEXT_PUBLIC_LNBIT_URL_2;
+      // apiKey = process.env.NEXT_PUBLIC_LNBIT_API_KEY_2;
     }
 
     const params = new URLSearchParams({
-      wallet_id: walletId,
+      // wallet_id: walletId,
       sortby: "time",
       direction: "desc",
+      limit: 10,
     });
 
     if (fromDate) {
@@ -847,6 +848,7 @@ const getPayments = async (
 
     response = await response.json();
 
+    console.log("line-771", response);
     if (response?.data) {
       return {
         status: true,
@@ -866,6 +868,7 @@ const getPayments = async (
     };
   }
 };
+
 
 module.exports = {
   logIn,

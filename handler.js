@@ -399,7 +399,6 @@ module.exports.getTposTrxn = async (event) => {
             return sendResponse(401, { message: "Token fetch failed", status: "failure", error: "Token fetch failed" })
         }
         const result = await getPayments(
-            walletId,
             token,
             1,
             fromDate,
