@@ -455,7 +455,7 @@ module.exports.updateLnAddress = async (event) => {
                         email: { $regex: new RegExp(`^${email}$`, 'i') }
                     }, {
                         spendLnurlpLink: udptUrl.data,
-                        lnaddress: newAddress
+                        lnaddress: (newAddress + "@spend.madhousewallet.com")
                     }, { returnDocument: "after" });
                     if (existingUser) {
                         return sendResponse(200, {
