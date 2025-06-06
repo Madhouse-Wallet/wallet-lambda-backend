@@ -9,11 +9,8 @@ const { sendResponse } = require("./utils/index")
 const { addLnbitTposUser, addLnbitSpendUser } = require('./services/create-lnbitUser.js');
 const { createBitcoinWallet } = require('./services/generateBitcoinWallet.js');
 
-const UsersModel = require('./services/users.js');
-const {
-    logIn,
-
-} = require("./services/lnbit.js");
+const UsersModel = require('./model/users.js');
+const { logIn, userLogIn, payInvoice, createTposInvoice, getPayments } = require("./services/lnbit.js");
 
 function shortenAddress(address) {
     if (!address || address.length < 10) return address;
@@ -71,23 +68,29 @@ module.exports.addlnbitUser = async (event) => {
 module.exports.getUser = async (event) => {
     try {
         let bodyData = JSON.parse(event.body);
-        const { email, token = false } = bodyData;
+        const { email = "", token = false, wallet = "" } = bodyData;
         await connectToDatabase();
         // Validate email
-        if (!email || typeof email !== 'string') {
+        if ((!email || typeof email !== 'string') && (!wallet || typeof wallet !== 'string')) {
             return sendResponse(400, {
-                message: "Invalid email!", status: "failure", error: "Invalid email!",
+                message: "Invalid Params!", status: "failure", error: "Invalid Params!",
             })
+        }
+        let cond = {};
+        if (email) {
+            cond = { email: { $regex: new RegExp(`^${email}$`, 'i') } };
+        } else if (wallet) {
+            cond = { wallet: wallet };
         }
         let existingUser;
         if (token) {
             existingUser = await UsersModel.findOne(
-                { email: { $regex: new RegExp(`^${email}$`, 'i') } },
+                cond,
                 { projection: { flowTokens: 0, boltzAutoReverseSwap: 0, boltzAutoReverseSwap_2: 0 } }
             );
         } else {
             existingUser = await UsersModel.findOne(
-                { email: { $regex: new RegExp(`^${email}$`, 'i') } },
+                cond,
                 { projection: { coinosToken: 0, flowTokens: 0, boltzAutoReverseSwap: 0, boltzAutoReverseSwap_2: 0 } }
             );
         }
@@ -300,14 +303,122 @@ module.exports.testlnbit1 = async (event) => {
 
 
 
- 
+module.exports.payTposInvoice = async (event) => {
+    try {
+        let bodyData = JSON.parse(event.body);
+        const { invoice, address } = bodyData;
+        await connectToDatabase();
+        const existingUser = await UsersModel.findOne({
+            wallet: address,
+        });
+        console.log("line-315", existingUser);
+        let getToken = (await userLogIn(2, existingUser?.lnbitId_3));
+        console.log("line-317", getToken);
+        if (getToken?.status) {
+            let token = getToken?.data?.token;
+            const payInv = (await payInvoice(
+                {
+                    out: true,
+                    bolt11: invoice, // ← invoice from above
+                },
+                token,
+                2,
+                existingUser?.lnbitAdminKey_3
+            ));
+            if (payInv?.status) {
+                return sendResponse(200, {
+                    status: "success", message: "Done Payment!", data: {}
+                });
+            } else {
+                return sendResponse(400, { message: payInv.msg, status: "failure", error: payInv.msg })
+            }
+        } else {
+            return sendResponse(400, { message: getToken.msg, status: "failure", error: getToken.msg })
+        }
+    } catch (error) {
+        console.log("error--->", error)
+        return sendResponse(500, {
+            message: "Internal server error", status: "failure", error: error.message || "Error Paying Invoice",
+        })
+    }
+}
 
 
+module.exports.createTposIdInvoice = async (event) => {
+    try {
+        let bodyData = JSON.parse(event.body);
+        const { tpoId,
+            amount,
+            memo,
+            userLnaddress = "",
+            details = {} } = bodyData;
+
+        if (!tpoId) {
+            return sendResponse(400, { message: "POS ID is required", status: "failure", error: "POS ID is required" })
+        }
+        const data = {
+            amount: Number(amount),
+            memo: memo || "",
+            details: details,
+            // tip_amount: Number(tipAmount),
+        };
+        if (userLnaddress) {
+            data.user_lnaddress = userLnaddress;
+        }
+        const getInvoice = (await createTposInvoice(
+            data,
+            tpoId
+        ));
+        if (getInvoice?.status) {
+            return sendResponse(200, {
+                status: "success", message: "Invoice Generated!", data: getInvoice?.data
+            });
+        } else {
+            return sendResponse(400, { message: getInvoice.msg, status: "failure", error: getInvoice.msg })
+        }
+    } catch (error) {
+        console.log("error--->", error)
+        return sendResponse(500, {
+            message: "Internal server error", status: "failure", error: error.message || "Error Paying Invoice",
+        })
+    }
+}
 
 
+module.exports.getTposTrxn = async (event) => {
+    try {
+        let bodyData = JSON.parse(event.body);
+        const { walletId, fromDate, toDate, tag, apiKey } = bodyData;
 
-
-
-
-
+        if (!walletId) {
+            return sendResponse(400, { message: "walletId is required", status: "failure", error: "walletId is required" })
+        }
+        const loginResponse = (await logIn(1));
+        const token = loginResponse?.data?.token;
+        if (!token) {
+            return sendResponse(401, { message: "Token fetch failed", status: "failure", error: "Token fetch failed" })
+        }
+        const result = await getPayments(
+            walletId,
+            token,
+            1,
+            fromDate,
+            toDate,
+            tag,
+            apiKey
+        );
+        if (result.status) {
+            return sendResponse(200, {
+                status: "success", data: result.data, message: "Transaction retrieved successfully!"
+            });
+        } else {
+            return sendResponse(400, { message: result.msg, status: "success", error: result.msg })
+        }
+    } catch (error) {
+        console.log("error--->", error)
+        return sendResponse(500, {
+            message: "Internal server error", status: "failure", error: error.message || "Error Paying Invoice",
+        })
+    }
+}
 

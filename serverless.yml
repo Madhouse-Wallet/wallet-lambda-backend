@@ -112,6 +112,30 @@ functions:
           path: /api/v1/testlnbit1
           method: POST
           cors: true
+  payTposInvoice:
+    timeout: 900
+    handler: handler.payTposInvoice
+    events:
+      - httpApi:
+          path: /api/v1/tpos-pay-invoice
+          method: POST
+          cors: true
+  createTposIdInvoice:
+    timeout: 900
+    handler: handler.createTposIdInvoice
+    events:
+      - httpApi:
+          path: /api/v1/create-tpos-invoice
+          method: POST
+          cors: true
+  getTposTrxn:
+    timeout: 900
+    handler: handler.getTposTrxn
+    events:
+      - httpApi:
+          path: /api/v1/get-tpos-trxn
+          method: POST
+          cors: true
 
 plugins:
   - serverless-offline

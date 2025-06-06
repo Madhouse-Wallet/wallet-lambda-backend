@@ -1,23 +1,19 @@
-
- 
-
-
- require('dotenv').config();
+require('dotenv').config();
 
 const logIn = async (type = 1) => {
   try {
     let backendUrl = "";
     let username = "";
     let password = "";
-    console.log("process.env.LNBIT_URL",process.env.LNBIT_URL)
-    console.log("process.env.LNBIT_URL_2",process.env.LNBIT_URL_2)
+    console.log("process.env.LNBIT_URL", process.env.LNBIT_URL)
+    console.log("process.env.LNBIT_URL_2", process.env.LNBIT_URL_2)
 
-    console.log("process.env.LNBIT_USERNAME",process.env.LNBIT_USERNAME)
-    console.log("process.env.LNBIT_PASS",process.env.LNBIT_PASS)
+    console.log("process.env.LNBIT_USERNAME", process.env.LNBIT_USERNAME)
+    console.log("process.env.LNBIT_PASS", process.env.LNBIT_PASS)
 
-    console.log("process.env.LNBIT_USERNAME_2",process.env.LNBIT_USERNAME_2)
-    console.log("process.env.LNBIT_PASS2",process.env.LNBIT_PASS_2)
-console.log("type-->",type)
+    console.log("process.env.LNBIT_USERNAME_2", process.env.LNBIT_USERNAME_2)
+    console.log("process.env.LNBIT_PASS2", process.env.LNBIT_PASS_2)
+    console.log("type-->", type)
     if (type == 1) {
       backendUrl = process.env.LNBIT_URL;
       username = process.env.LNBIT_USERNAME;
@@ -40,7 +36,7 @@ console.log("type-->",type)
     });
     response = await response.json();
     console.log("response login2 ", username,
-      password, backendUrl, type,  response)
+      password, backendUrl, type, response)
     if (response?.access_token) {
       return {
         status: true,
@@ -60,9 +56,6 @@ console.log("type-->",type)
     };
   }
 };
-
-
-
 
 const userLogIn = async (type = 1, usr) => {
   try {
@@ -133,7 +126,7 @@ const createUser = async (data, token, type = 1) => {
       body: JSON.stringify(data),
     });
     response = await response.json();
-    console.log("response create user",response)
+    console.log("response create user", response)
 
     if (response?.email) {
       return {
@@ -177,7 +170,7 @@ const addUserWallet = async (id, data, token, type = 1) => {
       body: JSON.stringify(data),
     });
     response = await response.json();
-    console.log("addUserWallet response 179-->",response)
+    console.log("addUserWallet response 179-->", response)
     if (response?.adminkey) {
       return {
         status: true,
@@ -221,7 +214,7 @@ const splitPaymentTarget = async (data, apiKey, token, type = 1) => {
       body: JSON.stringify(data),
     });
     response = await response.json();
-    console.log("response splitPaymentTarget",response)
+    console.log("response splitPaymentTarget", response)
 
     if (response?.detail) {
       return {
@@ -243,7 +236,7 @@ const splitPaymentTarget = async (data, apiKey, token, type = 1) => {
   }
 };
 
- 
+
 
 // create lnurlpCreate link
 const lnurlpCreate = async (data, apiKey, token, type = 1) => {
@@ -255,7 +248,7 @@ const lnurlpCreate = async (data, apiKey, token, type = 1) => {
       backendUrl = process.env.LNBIT_URL_2;
     }
     // LNBIT_API_KEY  ,   process.env.LNBIT_URL
-    console.log("backendUrl-->",backendUrl, data, token, apiKey)
+    console.log("backendUrl-->", backendUrl, data, token, apiKey)
     let response = await fetch(`${backendUrl}lnurlp/api/v1/links`, {
       method: "POST",
       headers: {
@@ -266,7 +259,7 @@ const lnurlpCreate = async (data, apiKey, token, type = 1) => {
       body: JSON.stringify(data),
     });
     response = await response.json();
-    console.log("response lnurlpCreate ",response)
+    console.log("response lnurlpCreate ", response)
 
     if (response?.detail) {
       return {
@@ -300,7 +293,7 @@ const withdrawLinkCreate = async (data, apiKey, token, type = 1) => {
       backendUrl = process.env.LNBIT_URL_2;
     }
     // LNBIT_API_KEY  ,   process.env.LNBIT_URL
-    console.log("backendUrl-->",backendUrl, data, token, apiKey)
+    console.log("backendUrl-->", backendUrl, data, token, apiKey)
     let response = await fetch(`${backendUrl}withdraw/api/v1/links`, {
       method: "POST",
       headers: {
@@ -311,7 +304,7 @@ const withdrawLinkCreate = async (data, apiKey, token, type = 1) => {
       body: JSON.stringify(data),
     });
     response = await response.json();
-    console.log("response withdrawLinkCreate ",response)
+    console.log("response withdrawLinkCreate ", response)
 
     if (response?.detail) {
       return {
@@ -355,7 +348,7 @@ const getWithdrawLinkCreate = async (apiKey, token, type = 1) => {
       },
     });
     response = await response.json();
-    console.log("getWithdrawLinkCreate-->",response)
+    console.log("getWithdrawLinkCreate-->", response)
     if (response?.detail) {
       return {
         status: false,
@@ -397,7 +390,7 @@ const getPayLnurlpLink = async (apiKey, token, type = 1) => {
       },
     });
     response = await response.json();
-        console.log("getPayLnurlpLink-->",backendUrl,response)
+    console.log("getPayLnurlpLink-->", backendUrl, response)
 
     if (response?.detail) {
       return {
@@ -443,7 +436,7 @@ const getUser = async (id, token, type = 1) => {
       },
     });
     response = await response.json();
-    console.log("response get user",response)
+    console.log("response get user", response)
 
     if (response?.email) {
       return {
@@ -473,7 +466,7 @@ const createTpos = async (data, apiKey, token, type = 1) => {
     } else {
       backendUrl = process.env.LNBIT_URL_2;
     }
-    console.log("type",backendUrl, apiKey )
+    console.log("type", backendUrl, apiKey)
     //process.env.NEXT_PUBLIC_TBTC_PRICE_CONTRACT_ADDRESS
     let response = await fetch(`${backendUrl}tpos/api/v1/tposs`, {
       method: "POST",
@@ -485,7 +478,7 @@ const createTpos = async (data, apiKey, token, type = 1) => {
       body: JSON.stringify(data),
     });
     response = await response.json();
-    console.log("createTpos 399-->",response)
+    console.log("createTpos 399-->", response)
     if (response?.id) {
       return {
         status: true,
@@ -528,7 +521,7 @@ const createBlotzAutoReverseSwap = async (data, apiKey, token, type = 1) => {
       }
     );
     response = await response.json();
-    console.log("response-> createBlotzAutoReverseSwap",type,response)
+    console.log("response-> createBlotzAutoReverseSwap", type, response)
     if (response?.id) {
       return {
         status: true,
@@ -582,6 +575,41 @@ const createInvoice = async (data, token, type = 1, apiKey) => {
         msg: response?.detail,
       };
     }
+  } catch (error) {
+    console.error("lnbit login API Error:", error);
+    return {
+      status: false,
+      msg: "fetch failed",
+    };
+  }
+};
+
+
+const createTposInvoice = async (data, tpoId) => {
+  try {
+    let backendUrl = process.env.LNBIT_URL;
+    //process.env.NEXT_PUBLIC_TBTC_PRICE_CONTRACT_ADDRESS
+    let response = await fetch(`${backendUrl}tpos/api/v1/tposs/${tpoId}/invoices`, {
+      method: "POST",
+      headers: {
+        accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => null);
+      return {
+        status: false,
+        msg: errorData?.detail || `API error with status ${response.status}`
+      };
+    }
+    response = await response.json();
+    return {
+      status: true,
+      data: response,
+    };
   } catch (error) {
     console.error("lnbit login API Error:", error);
     return {
@@ -742,7 +770,7 @@ const getStats = async (walletId, token, type = 1) => {
       }
     );
     response = await response.json();
-    console.log("response get user",response)
+    console.log("response get user", response)
 
     if (response) {
       return {
@@ -763,53 +791,7 @@ const getStats = async (walletId, token, type = 1) => {
     };
   }
 };
-
-// const getPayments = async (walletId, token, type = 1) => {
-//   try {
-//     let backendUrl = "";
-//     let apiKey = "";
-//     if (type == 1) {
-//       backendUrl = process.env.LNBIT_URL;
-//       apiKey = process.env.LNBIT_API_KEY;
-//     } else {
-//       backendUrl = process.env.LNBIT_URL_2;
-//       apiKey = process.env.LNBIT_API_KEY_2;
-//     }
-//     //process.env.NEXT_PUBLIC_TBTC_PRICE_CONTRACT_ADDRESS
-//     let response = await fetch(
-//       `${backendUrl}api/v1/payments/all/paginated?wallet_id=${walletId}`,
-//       {
-//         method: "GET",
-//         headers: {
-//           "Content-Type": "application/json",
-//           Cookie: `cookie_access_token=${token}; is_lnbits_user_authorized=true`,
-//           "X-API-KEY": apiKey,
-//         },
-//       }
-//     );
-//     response = await response.json();
-//     // console.log("response get user",response)
-
-//     if (response?.data) {
-//       return {
-//         status: true,
-//         data: response?.data,
-//       };
-//     } else {
-//       return {
-//         status: false,
-//         msg: response?.detail,
-//       };
-//     }
-//   } catch (error) {
-//     console.error("lnbit login API Error:", error);
-//     return {
-//       status: false,
-//       msg: "fetch failed",
-//     };
-//   }
-// };
-
+ 
 const getPayments = async (
   walletId,
   token,
@@ -899,6 +881,7 @@ module.exports = {
   getPayments,
   addUserWallet,
   userLogIn,
+  createTposInvoice,
   splitPaymentTarget,
   lnurlpCreate,
   withdrawLinkCreate,
