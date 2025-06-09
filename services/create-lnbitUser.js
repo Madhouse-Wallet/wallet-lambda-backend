@@ -54,7 +54,7 @@ const createTposLink = async (wallet1, wallet2, apiKey1, apikey2, token, account
 };
 
 // Create Boltz Reverse Auto-Swap Links
-const createBoltzAutoReverseSwap = async (wallet1, wallet2, apiKey1, apikey2, coinosis_address, bitcoin_address, refund_address, token, accountType) => {
+const createBoltzAutoReverseSwap = async (wallet1, wallet2, apiKey1, apikey2, bitcoin_address, refund_address, token, accountType) => {
   try {
     let result = {
       status: true,
@@ -62,16 +62,16 @@ const createBoltzAutoReverseSwap = async (wallet1, wallet2, apiKey1, apikey2, co
       boltzAutoReverseSwap2: {}
     };
 
-    let boltzReverseSwap1 = await createBlotzAutoReverseSwap({
-      wallet: wallet1,
-      onchain_address: coinosis_address,
-      asset: "L-BTC/BTC",
-      direction: "send",
-      balance: 100,
-      instant_settlement: true,
-      amount: "200"
-    }, apiKey1, token, accountType);
-    if (boltzReverseSwap1?.status) result.boltzAutoReverseSwap1 = boltzReverseSwap1.data;
+    // let boltzReverseSwap1 = await createBlotzAutoReverseSwap({
+    //   wallet: wallet1,
+    //   onchain_address: coinosis_address,
+    //   asset: "L-BTC/BTC",
+    //   direction: "send",
+    //   balance: 100,
+    //   instant_settlement: true,
+    //   amount: "200"
+    // }, apiKey1, token, accountType);
+    // if (boltzReverseSwap1?.status) result.boltzAutoReverseSwap1 = boltzReverseSwap1.data;
 
     let boltzReverseSwap2 = await createBlotzAutoReverseSwap({
       wallet: wallet2,
@@ -174,7 +174,7 @@ const createSplitPayment = async (wallet1, wallet2, apiKey1, apikey2, token, acc
 };
 
 // Add LNBits TPoS User
-const addLnbitTposUser = async (madhouseWallet, email, coinosis_address, bitcoin_address, refund_address, accountType = 1, attempt = 1) => {
+const addLnbitTposUser = async (madhouseWallet, email, bitcoin_address, refund_address, accountType = 1, attempt = 1) => {
   try {
     const newEmail = email;
     const getToken = await logIn(accountType);
@@ -216,7 +216,7 @@ const addLnbitTposUser = async (madhouseWallet, email, coinosis_address, bitcoin
     await UsersModel.findOneAndUpdate({ email }, { $set: updateFields });
 
     if (accountType === 1) {
-      const boltz = await createBoltzAutoReverseSwap(wallets[0].id, wallets[1].id, wallets[0].adminkey, wallets[1].adminkey, coinosis_address, bitcoin_address, refund_address, getUserToken, accountType);
+      const boltz = await createBoltzAutoReverseSwap(wallets[0].id, wallets[1].id, wallets[0].adminkey, wallets[1].adminkey,bitcoin_address, refund_address, getUserToken, accountType);
       if (boltz?.status) {
         await UsersModel.findOneAndUpdate({ email }, {
           $set: {
