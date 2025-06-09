@@ -21,19 +21,19 @@ function shortenAddress(address) {
 module.exports.addlnbitUser = async (event) => {
     try {
         let bodyData = JSON.parse(event.body);
-        const { madhouseWallet, email,  bitcoinWallet, provisionlnbitType, refund_address1 = ""
+        const { madhouseWallet, email, bitcoinWallet, provisionlnbitType, refund_address1 = ""
         } = bodyData;
         await connectToDatabase();
         const shortened = await shortenAddress(madhouseWallet);
         if (provisionlnbitType == 1) {
             let refund_address = await addLnbitSpendUser(shortened, email, 2, 1);
             if (refund_address) {
-                await addLnbitTposUser(shortened, email,  bitcoinWallet, refund_address, 1, 1);
+                await addLnbitTposUser(shortened, email, bitcoinWallet, refund_address, 1, 1);
             }
         } else if (provisionlnbitType == 2) {
-            await addLnbitTposUser(shortened, email,  bitcoinWallet, refund_address1, 1, 1);
+            await addLnbitTposUser(shortened, email, bitcoinWallet, refund_address1, 1, 1);
         } else if (provisionlnbitType == 3) {
-            await addLnbitTposUser(shortened, email,  bitcoinWallet, refund_address1, 1, 1);
+            await addLnbitTposUser(shortened, email, bitcoinWallet, refund_address1, 1, 1);
         }
 
 
@@ -129,7 +129,7 @@ module.exports.getUser = async (event) => {
 module.exports.createUser = async (event) => {
     try {
         let bodyData = JSON.parse(event.body);
-        const { email, username, passkey, totalPasskey = 1, wallet, bitcoinWallet = "", liquidBitcoinWallet = "", coinosToken,
+        const { email, username, passkey, totalPasskey = 1, wallet, bitcoinWallet = "",
             flowTokens, coinosUserName } = bodyData;
         await connectToDatabase();
         // Validate email
@@ -147,8 +147,8 @@ module.exports.createUser = async (event) => {
             })
         } else {
             const result = await UsersModel.insertOne({
-                email, username, passkey_number: 1, passkey_status: false, passkey, totalPasskey, wallet, bitcoinWallet, liquidBitcoinWallet,
-                coinosToken, flowTokens, coinosUserName, createdAt: new Date()
+                email, username, passkey_number: 1, passkey_status: false, passkey, totalPasskey, wallet, bitcoinWallet,
+                flowTokens, coinosUserName, createdAt: new Date()
             });
             return sendResponse(200, {
                 message: "User Created successfully!", status: "success", data: result,
