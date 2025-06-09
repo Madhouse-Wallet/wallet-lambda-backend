@@ -68,10 +68,10 @@ module.exports.addlnbitUser = async (event) => {
 module.exports.getUser = async (event) => {
     try {
         let bodyData = JSON.parse(event.body);
-        const { email = "", token = false, wallet = "" } = bodyData;
+        const { email = "", token = false, wallet = "", tposId = "" } = bodyData;
         await connectToDatabase();
         // Validate email
-        if ((!email || typeof email !== 'string') && (!wallet || typeof wallet !== 'string')) {
+        if ((!email || typeof email !== 'string') && (!wallet || typeof wallet !== 'string') && (!tposId || typeof tposId !== 'string')) {
             return sendResponse(400, {
                 message: "Invalid Params!", status: "failure", error: "Invalid Params!",
             })
@@ -81,6 +81,14 @@ module.exports.getUser = async (event) => {
             cond = { email: { $regex: new RegExp(`^${email}$`, 'i') } };
         } else if (wallet) {
             cond = { wallet: wallet };
+        } else if (tposId) {
+            cond = {
+                $or: [
+                    { lnbitLinkId: tposId },
+                    { lnbitLinkId_2: tposId }
+                ]
+            };
+
         }
         let existingUser;
         if (token) {
