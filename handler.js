@@ -67,7 +67,13 @@ module.exports.addlnbitUser = async (event) => {
 
 module.exports.getUser = async (event) => {
     try {
-        let bodyData = JSON.parse(event.body);
+        console.log("event-->", event)
+        let bodyData = {}
+        if (event.body) {
+            bodyData = JSON.parse(event.body);
+        } else {
+            bodyData = event;  // fallback if body is not defined
+        }
         const { email = "", token = false, wallet = "", tposId = "" } = bodyData;
         await connectToDatabase();
         // Validate email
@@ -128,87 +134,97 @@ module.exports.getUser = async (event) => {
 
 
 module.exports.getUserInvoke = async (event) => {
-  try {
-    console.log("event.body-->",event)
-    const bodyData = typeof event.body === "string" ? JSON.parse(event.body) : event.body;
-    console.log("bodyData",bodyData)
-    const { email = "", token = false, wallet = "", tposId = "" } = bodyData;
+    try {
+        console.log("event-->", event)
+        let bodyData = {}
+        if (event.body) {
+            bodyData = JSON.parse(event.body);
+        } else {
+            bodyData = event;  // fallback if body is not defined
+        }
+        const { email = "", token = false, wallet = "", tposId = "" } = bodyData;
 
-    await connectToDatabase();
+        await connectToDatabase();
 
-    if ((!email || typeof email !== 'string') &&
-        (!wallet || typeof wallet !== 'string') &&
-        (!tposId || typeof tposId !== 'string')) {
-      return sendResponse(400, {
-        message: "Invalid Params!",
-        status: "failure",
-        error: "Invalid Params!",
-      });
+        if ((!email || typeof email !== 'string') &&
+            (!wallet || typeof wallet !== 'string') &&
+            (!tposId || typeof tposId !== 'string')) {
+            return sendResponse(400, {
+                message: "Invalid Params!",
+                status: "failure",
+                error: "Invalid Params!",
+            });
+        }
+
+        let cond = {};
+        if (email) {
+            cond = { email: { $regex: new RegExp(`^${email}$`, 'i') } };
+        } else if (wallet) {
+            cond = { wallet: wallet };
+        } else if (tposId) {
+            cond = {
+                $or: [
+                    { lnbitLinkId: tposId },
+                    { lnbitLinkId_2: tposId },
+                ],
+            };
+        }
+
+        let existingUser;
+        if (token) {
+            existingUser = await UsersModel.findOne(
+                cond,
+                { projection: { flowTokens: 0, boltzAutoReverseSwap: 0, boltzAutoReverseSwap_2: 0 } }
+            );
+        } else {
+            existingUser = await UsersModel.findOne(
+                cond,
+                { projection: { coinosToken: 0, flowTokens: 0, boltzAutoReverseSwap: 0, boltzAutoReverseSwap_2: 0 } }
+            );
+        }
+
+        if (existingUser) {
+            return sendResponse(200, {
+                message: "User fetched successfully!",
+                status: "success",
+                data: existingUser,
+            });
+        } else {
+            return sendResponse(400, {
+                message: "No User Found!",
+                status: "failure",
+                error: "No User Found!",
+            });
+        }
+    } catch (error) {
+        console.log("error--->", error);
+
+        if (error.response && error.response.data) {
+            return sendResponse(500, {
+                message: "Internal server error",
+                status: "failure",
+                error: error.response.data.error || "Error Finding User!",
+            });
+        }
+
+        return sendResponse(500, {
+            message: "Internal server error",
+            status: "failure",
+            error: error.message || "Error Finding User!",
+        });
     }
-
-    let cond = {};
-    if (email) {
-      cond = { email: { $regex: new RegExp(`^${email}$`, 'i') } };
-    } else if (wallet) {
-      cond = { wallet: wallet };
-    } else if (tposId) {
-      cond = {
-        $or: [
-          { lnbitLinkId: tposId },
-          { lnbitLinkId_2: tposId },
-        ],
-      };
-    }
-
-    let existingUser;
-    if (token) {
-      existingUser = await UsersModel.findOne(
-        cond,
-        { projection: { flowTokens: 0, boltzAutoReverseSwap: 0, boltzAutoReverseSwap_2: 0 } }
-      );
-    } else {
-      existingUser = await UsersModel.findOne(
-        cond,
-        { projection: { coinosToken: 0, flowTokens: 0, boltzAutoReverseSwap: 0, boltzAutoReverseSwap_2: 0 } }
-      );
-    }
-
-    if (existingUser) {
-      return sendResponse(200, {
-        message: "User fetched successfully!",
-        status: "success",
-        data: existingUser,
-      });
-    } else {
-      return sendResponse(400, {
-        message: "No User Found!",
-        status: "failure",
-        error: "No User Found!",
-      });
-    }
-  } catch (error) {
-    console.log("error--->", error);
-
-    if (error.response && error.response.data) {
-      return sendResponse(500, {
-        message: "Internal server error",
-        status: "failure",
-        error: error.response.data.error || "Error Finding User!",
-      });
-    }
-
-    return sendResponse(500, {
-      message: "Internal server error",
-      status: "failure",
-      error: error.message || "Error Finding User!",
-    });
-  }
 };
 
 
 module.exports.createUser = async (event) => {
     try {
-        let bodyData = JSON.parse(event.body);
+        console.log("event-->", event)
+        let bodyData = {}
+        if (event.body) {
+            bodyData = JSON.parse(event.body);
+        } else {
+            bodyData = event;  // fallback if body is not defined
+        }
         const { email, username, passkey, totalPasskey = 1, wallet, bitcoinWallet = "",
             flowTokens, coinosUserName } = bodyData;
         await connectToDatabase();
@@ -250,7 +266,13 @@ module.exports.createUser = async (event) => {
 
 module.exports.updtUser = async (event) => {
     try {
-        let bodyData = JSON.parse(event.body);
+        console.log("event-->", event)
+        let bodyData = {}
+        if (event.body) {
+            bodyData = JSON.parse(event.body);
+        } else {
+            bodyData = event;  // fallback if body is not defined
+        }
         const { findData = {}, updtData = {} } = bodyData;
         await connectToDatabase();
         // const existingUser = await usersCollection.findOne({ email });
@@ -393,7 +415,13 @@ module.exports.testlnbit1 = async (event) => {
 
 module.exports.payTposInvoice = async (event) => {
     try {
-        let bodyData = JSON.parse(event.body);
+        console.log("event-->", event)
+        let bodyData = {}
+        if (event.body) {
+            bodyData = JSON.parse(event.body);
+        } else {
+            bodyData = event;  // fallback if body is not defined
+        }
         const { invoice, address } = bodyData;
         await connectToDatabase();
         const existingUser = await UsersModel.findOne({
@@ -434,7 +462,13 @@ module.exports.payTposInvoice = async (event) => {
 
 module.exports.createTposIdInvoice = async (event) => {
     try {
-        let bodyData = JSON.parse(event.body);
+        console.log("event-->", event)
+        let bodyData = {}
+        if (event.body) {
+            bodyData = JSON.parse(event.body);
+        } else {
+            bodyData = event;  // fallback if body is not defined
+        }
         const { tpoId,
             amount,
             memo,
@@ -475,7 +509,13 @@ module.exports.createTposIdInvoice = async (event) => {
 
 module.exports.getTposTrxn = async (event) => {
     try {
-        let bodyData = JSON.parse(event.body);
+        console.log("event-->", event)
+        let bodyData = {}
+        if (event.body) {
+            bodyData = JSON.parse(event.body);
+        } else {
+            bodyData = event;  // fallback if body is not defined
+        }
         const { walletId, fromDate, toDate, tag, apiKey } = bodyData;
 
         if (!walletId) {
