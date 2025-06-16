@@ -64,46 +64,6 @@ functions:
           path: /api/v1/addlnbitUser
           method: POST
           cors: true
-  createUser:
-    timeout: 900
-    handler: handler.createUser
-    events:
-      - httpApi:
-          path: /api/v1/createUser
-          method: POST
-          cors: true
-  updtUser:
-    timeout: 900
-    handler: handler.updtUser
-    events:
-      - httpApi:
-          path: /api/v1/updtUser
-          method: POST
-          cors: true
-  getBitcoinWallet:
-    timeout: 900
-    handler: handler.getBitcoinWallet
-    events:
-      - httpApi:
-          path: /api/v1/getBitcoinWallet
-          method: POST
-          cors: true
-  testlnbit:
-    timeout: 900
-    handler: handler.testlnbit
-    events:
-      - httpApi:
-          path: /api/v1/testlnbit
-          method: POST
-          cors: true
-  testlnbit1:
-    timeout: 900
-    handler: handler.testlnbit1
-    events:
-      - httpApi:
-          path: /api/v1/testlnbit1
-          method: POST
-          cors: true
   updateLnAddress:
     timeout: 900
     handler: handler.updateLnAddress
@@ -124,6 +84,21 @@ functions:
   getUser:
     timeout: 900
     handler: handler.getUser
+  createUser:
+    timeout: 900
+    handler: handler.createUser
+  updtUser:
+    timeout: 900
+    handler: handler.updtUser
+  getBitcoinWallet:
+    timeout: 900
+    handler: handler.getBitcoinWallet
+  testlnbit:
+    timeout: 900
+    handler: handler.testlnbit
+  testlnbit1:
+    timeout: 900
+    handler: handler.testlnbit1
 
 plugins:
   - serverless-offline
