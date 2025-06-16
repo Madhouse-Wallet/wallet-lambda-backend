@@ -144,6 +144,9 @@ functions:
           path: /api/v1/updt-lnaddress
           method: POST
           cors: true
+  getUserInvoke:
+    timeout: 900
+    handler: handler.getUserInvoke
 
 plugins:
   - serverless-offline
