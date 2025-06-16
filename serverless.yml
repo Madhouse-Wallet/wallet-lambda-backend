@@ -64,14 +64,6 @@ functions:
           path: /api/v1/addlnbitUser
           method: POST
           cors: true
-  getUser:
-    timeout: 900
-    handler: handler.getUser
-    events:
-      - httpApi:
-          path: /api/v1/getUser
-          method: POST
-          cors: true
   createUser:
     timeout: 900
     handler: handler.createUser
@@ -112,30 +104,6 @@ functions:
           path: /api/v1/testlnbit1
           method: POST
           cors: true
-  payTposInvoice:
-    timeout: 900
-    handler: handler.payTposInvoice
-    events:
-      - httpApi:
-          path: /api/v1/tpos-pay-invoice
-          method: POST
-          cors: true
-  createTposIdInvoice:
-    timeout: 900
-    handler: handler.createTposIdInvoice
-    events:
-      - httpApi:
-          path: /api/v1/create-tpos-invoice
-          method: POST
-          cors: true
-  getTposTrxn:
-    timeout: 900
-    handler: handler.getTposTrxn
-    events:
-      - httpApi:
-          path: /api/v1/get-tpos-trxn
-          method: POST
-          cors: true
   updateLnAddress:
     timeout: 900
     handler: handler.updateLnAddress
@@ -144,9 +112,18 @@ functions:
           path: /api/v1/updt-lnaddress
           method: POST
           cors: true
-  getUserInvoke:
+  payTposInvoice:
     timeout: 900
-    handler: handler.getUserInvoke
+    handler: handler.payTposInvoice
+  createTposIdInvoice:
+    timeout: 900
+    handler: handler.createTposIdInvoice
+  getTposTrxn:
+    timeout: 900
+    handler: handler.getTposTrxn
+  getUser:
+    timeout: 900
+    handler: handler.getUser
 
 plugins:
   - serverless-offline
