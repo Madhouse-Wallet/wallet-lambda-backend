@@ -20,7 +20,13 @@ function shortenAddress(address) {
 
 module.exports.addlnbitUser = async (event) => {
     try {
-        let bodyData = JSON.parse(event.body);
+        console.log("event-->", event)
+        let bodyData = {}
+        if (event.body) {
+            bodyData = JSON.parse(event.body);
+        } else {
+            bodyData = event;  // fallback if body is not defined
+        }
         const { madhouseWallet, email, bitcoinWallet, provisionlnbitType, refund_address1 = ""
         } = bodyData;
         await connectToDatabase();
@@ -552,7 +558,13 @@ module.exports.getTposTrxn = async (event) => {
 
 module.exports.updateLnAddress = async (event) => {
     try {
-        let bodyData = JSON.parse(event.body);
+        console.log("event-->", event)
+        let bodyData = {}
+        if (event.body) {
+            bodyData = JSON.parse(event.body);
+        } else {
+            bodyData = event;  // fallback if body is not defined
+        }
         const { email, newAddress } = bodyData;
         await connectToDatabase();
         // Validate email
@@ -608,6 +620,9 @@ module.exports.updateLnAddress = async (event) => {
         //updateLnurlp
     } catch (error) {
         console.log("update lnaddress-->", error)
+        return sendResponse(400, {
+            message: "Please try again after sometime!", status: "failure", error: "Please try again after sometime!",
+        })
     }
 }
 
