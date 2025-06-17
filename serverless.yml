@@ -56,25 +56,15 @@ provider:
           Resource: "*"
 
 functions:
-  addlnbitUser:
-    timeout: 900
-    handler: handler.addlnbitUser
-    events:
-      - httpApi:
-          path: /api/v1/addlnbitUser
-          method: POST
-          cors: true
-  updateLnAddress:
-    timeout: 900
-    handler: handler.updateLnAddress
-    events:
-      - httpApi:
-          path: /api/v1/updt-lnaddress
-          method: POST
-          cors: true
   payTposInvoice:
     timeout: 900
     handler: handler.payTposInvoice
+  addlnbitUser:
+    timeout: 900
+    handler: handler.addlnbitUser
+  updateLnAddress:
+    timeout: 900
+    handler: handler.updateLnAddress
   createTposIdInvoice:
     timeout: 900
     handler: handler.createTposIdInvoice
