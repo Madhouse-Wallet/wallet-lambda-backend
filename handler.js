@@ -166,7 +166,7 @@ module.exports.createUser = async (event) => {
                 message: "User Already Exist!", status: "failure", error: "User Already Exist!",
             })
         } else {
-            const result = await UsersModel.insertOne({
+            const result = await UsersModel.create({
                 email, username, passkey_number: 1, passkey_status: false, passkey, totalPasskey, wallet, bitcoinWallet,
                 flowTokens, createdAt: new Date()
             });
