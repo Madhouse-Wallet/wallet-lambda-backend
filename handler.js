@@ -80,10 +80,10 @@ module.exports.getUser = async (event) => {
         } else {
             bodyData = event;  // fallback if body is not defined
         }
-        const { email = "", token = false, wallet = "", tposId = "" } = bodyData;
+        const { email = "", token = false, wallet = "", tposId = "", flowtoken = "" } = bodyData;
         await connectToDatabase();
         // Validate email
-        if ((!email || typeof email !== 'string') && (!wallet || typeof wallet !== 'string') && (!tposId || typeof tposId !== 'string')) {
+        if ((!email || typeof email !== 'string') && (!wallet || typeof wallet !== 'string') && (!tposId || typeof tposId !== 'string') && (!flowtoken || typeof flowtoken !== 'string')) {
             return sendResponse(400, {
                 message: "Invalid Params!", status: "failure", error: "Invalid Params!",
             })
@@ -91,6 +91,8 @@ module.exports.getUser = async (event) => {
         let cond = {};
         if (email) {
             cond = { email: { $regex: new RegExp(`^${email}$`, 'i') } };
+        } else if (flowtoken) {
+            cond = { "flowTokens.token": flowtoken };
         } else if (wallet) {
             cond = { wallet: wallet };
         } else if (tposId) {
