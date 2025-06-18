@@ -140,90 +140,6 @@ module.exports.getUser = async (event) => {
 }
 
 
-
-module.exports.getUserInvoke = async (event) => {
-    try {
-        console.log("event-->", event)
-        let bodyData = {}
-        if (event.body) {
-            bodyData = JSON.parse(event.body);
-        } else {
-            bodyData = event;  // fallback if body is not defined
-        }
-        const { email = "", token = false, wallet = "", tposId = "" } = bodyData;
-
-        await connectToDatabase();
-
-        if ((!email || typeof email !== 'string') &&
-            (!wallet || typeof wallet !== 'string') &&
-            (!tposId || typeof tposId !== 'string')) {
-            return sendResponse(400, {
-                message: "Invalid Params!",
-                status: "failure",
-                error: "Invalid Params!",
-            });
-        }
-
-        let cond = {};
-        if (email) {
-            cond = { email: { $regex: new RegExp(`^${email}$`, 'i') } };
-        } else if (wallet) {
-            cond = { wallet: wallet };
-        } else if (tposId) {
-            cond = {
-                $or: [
-                    { lnbitLinkId: tposId },
-                    { lnbitLinkId_2: tposId },
-                ],
-            };
-        }
-
-        let existingUser;
-        if (token) {
-            existingUser = await UsersModel.findOne(
-                cond,
-                { projection: { flowTokens: 0, boltzAutoReverseSwap: 0, boltzAutoReverseSwap_2: 0 } }
-            );
-        } else {
-            existingUser = await UsersModel.findOne(
-                cond,
-                { projection: { coinosToken: 0, flowTokens: 0, boltzAutoReverseSwap: 0, boltzAutoReverseSwap_2: 0 } }
-            );
-        }
-
-        if (existingUser) {
-            return sendResponse(200, {
-                message: "User fetched successfully!",
-                status: "success",
-                data: existingUser,
-            });
-        } else {
-            return sendResponse(400, {
-                message: "No User Found!",
-                status: "failure",
-                error: "No User Found!",
-            });
-        }
-    } catch (error) {
-        console.log("error--->", error);
-
-        if (error.response && error.response.data) {
-            return sendResponse(500, {
-                message: "Internal server error",
-                status: "failure",
-                error: error.response.data.error || "Error Finding User!",
-            });
-        }
-
-        return sendResponse(500, {
-            message: "Internal server error",
-            status: "failure",
-            error: error.message || "Error Finding User!",
-        });
-    }
-};
-
-
 module.exports.createUser = async (event) => {
     try {
         console.log("event-->", event)
@@ -234,7 +150,7 @@ module.exports.createUser = async (event) => {
             bodyData = event;  // fallback if body is not defined
         }
         const { email, username, passkey, totalPasskey = 1, wallet, bitcoinWallet = "",
-            flowTokens, coinosUserName } = bodyData;
+            flowTokens } = bodyData;
         await connectToDatabase();
         // Validate email
         if (!email || typeof email !== 'string') {
@@ -252,7 +168,7 @@ module.exports.createUser = async (event) => {
         } else {
             const result = await UsersModel.insertOne({
                 email, username, passkey_number: 1, passkey_status: false, passkey, totalPasskey, wallet, bitcoinWallet,
-                flowTokens, coinosUserName, createdAt: new Date()
+                flowTokens, createdAt: new Date()
             });
             return sendResponse(200, {
                 message: "User Created successfully!", status: "success", data: result,
@@ -262,6 +178,9 @@ module.exports.createUser = async (event) => {
     } catch (error) {
         console.log("error--->", error)
         // Check if it's an Axios error with response data
+        if (error.code === 11000 && error.keyPattern?.email) {
+            return res.status(400).json({ status: "failure", message: 'User Already Exist!', userData: {} });
+        }
         if (error.response && error.response.data) {
             return sendResponse(500, { message: "Internal server error", status: "failure", error: error.response.data.error || "Error Finding User!" })
         }

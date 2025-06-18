@@ -14,7 +14,6 @@ const userSchema = new mongoose.Schema(
     liquidBitcoinWallet: String,
     coinosToken: String,
     flowTokens: { type: mongoose.Schema.Types.Mixed },
-    coinosUserName: String,
     lnbitAdminKey_3: String,
     lnbitEmail_3: String,
     lnbitId_3: String,
