@@ -604,7 +604,7 @@ module.exports.lnbitCalls = async (event) => {
         } else {
             bodyData = event;  // fallback if body is not defined
         }
-        const { name = "", body = [] } = bodyData;
+        const { name = "", data = [] } = bodyData;
         // Validate email
         if (!name || typeof name !== "string" || !(name in functionMap)) {
             return sendResponse(400, {
@@ -613,7 +613,7 @@ module.exports.lnbitCalls = async (event) => {
                 error: "Function not found!",
             });
         }
-        const result = await functionMap[name](...body);
+        const result = await functionMap[name](...data);
         return sendResponse(200, {
             message: "Function called successfully!", status: "success",
             data: result
