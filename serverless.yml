@@ -89,6 +89,9 @@ functions:
   testlnbit1:
     timeout: 900
     handler: handler.testlnbit1
+  lnbitCalls:
+    timeout: 900
+    handler: handler.lnbitCalls
 
 plugins:
   - serverless-offline

@@ -10,8 +10,53 @@ const { addLnbitTposUser, addLnbitSpendUser } = require('./services/create-lnbit
 const { createBitcoinWallet } = require('./services/generateBitcoinWallet.js');
 
 const UsersModel = require('./model/users.js');
-const { logIn, userLogIn, payInvoice, createTposInvoice, getPayments, updateLnurlp } = require("./services/lnbit.js");
+const { logIn,
+    createUser,
+    getUser,
+    createTpos,
+    createBlotzAutoReverseSwap,
+    createInvoice,
+    createSwapReverse,
+    createSwap,
+    payInvoice,
+    getStats,
+    getPayments,
+    addUserWallet,
+    userLogIn,
+    createTposInvoice,
+    splitPaymentTarget,
+    lnurlpCreate,
+    withdrawLinkCreate,
+    getWithdrawLinkCreate,
+    getPayLnurlpLink,
+    updateLnurlp,
+    decodeInvoice } = require("./services/lnbit.js");
 
+
+// Combine all functions into a map
+const functionMap = {
+    logIn,
+    createUser,
+    getUser,
+    createTpos,
+    createBlotzAutoReverseSwap,
+    createInvoice,
+    createSwapReverse,
+    createSwap,
+    payInvoice,
+    getStats,
+    getPayments,
+    addUserWallet,
+    userLogIn,
+    createTposInvoice,
+    splitPaymentTarget,
+    lnurlpCreate,
+    withdrawLinkCreate,
+    getWithdrawLinkCreate,
+    getPayLnurlpLink,
+    updateLnurlp,
+    decodeInvoice
+};
 function shortenAddress(address) {
     if (!address || address.length < 10) return address;
     return `${address.slice(0, 6)}${address.slice(-4)}`;
@@ -544,6 +589,42 @@ module.exports.updateLnAddress = async (event) => {
         return sendResponse(400, {
             message: "Please try again after sometime!", status: "failure", error: "Please try again after sometime!",
         })
+    }
+}
+
+
+
+
+module.exports.lnbitCalls = async (event) => {
+    try {
+        console.log("lnbitCalls event-->", event)
+        let bodyData = {}
+        if (event.body) {
+            bodyData = JSON.parse(event.body);
+        } else {
+            bodyData = event;  // fallback if body is not defined
+        }
+        const { name = "", body = [] } = bodyData;
+        // Validate email
+        if (!name || typeof name !== "string" || !(name in functionMap)) {
+            return sendResponse(400, {
+                message: "Invalid function name!",
+                status: "failure",
+                error: "Function not found!",
+            });
+        }
+        const result = await functionMap[name](...body);
+        return sendResponse(200, {
+            message: "Function called successfully!", status: "success",
+            data: result
+        });
+    } catch (error) {
+        console.error("lnbitCalls error:", error);
+        return sendResponse(500, {
+            message: "Internal Server Error",
+            status: "failure",
+            error: error.message,
+        });
     }
 }
 

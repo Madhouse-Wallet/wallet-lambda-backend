@@ -913,6 +913,54 @@ const getPayments = async (
   }
 };
 
+const decodeInvoice = async (invoice, token, type = 1, apiKey) => {
+  try {
+    let backendUrl = "";
+    if (type == 1) {
+      backendUrl = process.env.LNBIT_URL;
+    } else {
+      backendUrl = process.env.LNBIT_URL_2;
+    }
+
+    // Encode the invoice parameter for URL safety
+    const encodedInvoice = encodeURIComponent(invoice);
+
+    let response = await fetch(
+      `${backendUrl}lndhub/ext/decodeinvoice?invoice=${encodedInvoice}`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          accept: "application/json",
+          Cookie: `cookie_access_token=${token}; is_lnbits_user_authorized=true`,
+          "X-API-KEY": apiKey,
+        },
+      }
+    );
+
+    response = await response.json();
+
+    // Check if the response contains decoded invoice data
+    // Common fields in decoded invoices: payment_hash, amount, description, expiry, etc.
+    if (response) {
+      return {
+        status: true,
+        data: response,
+      };
+    } else {
+      return {
+        status: false,
+        msg: response?.detail || response?.error || "Failed to decode invoice",
+      };
+    }
+  } catch (error) {
+    console.error("decodeInvoice API Error:", error);
+    return {
+      status: false,
+      msg: "fetch failed",
+    };
+  }
+};
 
 module.exports = {
   logIn,
@@ -934,5 +982,7 @@ module.exports = {
   withdrawLinkCreate,
   getWithdrawLinkCreate,
   getPayLnurlpLink,
-  updateLnurlp
+  updateLnurlp,
+  decodeInvoice
 };
+
