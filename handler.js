@@ -31,7 +31,7 @@ const { logIn,
     getPayLnurlpLink,
     updateLnurlp,
     decodeInvoice, getWithdraw,
-    getDeposit } = require("./services/lnbit.js");
+    getDeposit, getPaymentSuccess } = require("./services/lnbit.js");
 
 
 // Combine all functions into a map
@@ -58,7 +58,8 @@ const functionMap = {
     updateLnurlp,
     decodeInvoice,
     getWithdraw,
-    getDeposit
+    getDeposit,
+    getPaymentSuccess
 };
 function shortenAddress(address) {
     if (!address || address.length < 10) return address;
