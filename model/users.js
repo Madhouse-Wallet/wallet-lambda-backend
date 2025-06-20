@@ -38,6 +38,8 @@ const userSchema = new mongoose.Schema(
 
     boltzAutoReverseSwap: { type: mongoose.Schema.Types.Mixed, default: {} },
     boltzAutoReverseSwap_2: { type: mongoose.Schema.Types.Mixed, default: {} },
+    splitPaymentTarget: { type: mongoose.Schema.Types.Mixed, default: {} },
+    splitPaymentTarget_2: { type: mongoose.Schema.Types.Mixed, default: {} },
     creditCardPass: {
       type: mongoose.Schema.Types.Mixed, default: ""
     }

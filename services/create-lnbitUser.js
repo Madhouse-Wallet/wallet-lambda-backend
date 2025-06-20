@@ -215,19 +215,27 @@ const addLnbitTposUser = async (madhouseWallet, email, bitcoin_address, refund_a
 
     await UsersModel.findOneAndUpdate({ email }, { $set: updateFields });
 
-    if (accountType === 1) {
-      const boltz = await createBoltzAutoReverseSwap(wallets[0].id, wallets[1].id, wallets[0].adminkey, wallets[1].adminkey,bitcoin_address, refund_address, getUserToken, accountType);
-      if (boltz?.status) {
-        await UsersModel.findOneAndUpdate({ email }, {
-          $set: {
-            boltzAutoReverseSwap: boltz.boltzAutoReverseSwap1 || {},
-            boltzAutoReverseSwap_2: boltz.boltzAutoReverseSwap2 || {}
-          }
-        });
-      }
-    }
+    // if (accountType === 1) {
+    //   const boltz = await createBoltzAutoReverseSwap(wallets[0].id, wallets[1].id, wallets[0].adminkey, wallets[1].adminkey, bitcoin_address, refund_address, getUserToken, accountType);
+    //   if (boltz?.status) {
+    //     await UsersModel.findOneAndUpdate({ email }, {
+    //       $set: {
+    //         boltzAutoReverseSwap: boltz.boltzAutoReverseSwap1 || {},
+    //         boltzAutoReverseSwap_2: boltz.boltzAutoReverseSwap2 || {}
+    //       }
+    //     });
+    //   }
+    // }
 
     const split = await createSplitPayment(wallets[0].id, wallets[1].id, wallets[0].adminkey, wallets[1].adminkey, getUserToken, accountType);
+    if (split?.status) {
+      await UsersModel.findOneAndUpdate({ email }, {
+        $set: {
+          splitPaymentTarget: split.splitPaymentTarget1 || {},
+          splitPaymentTarget_2: split.splitPaymentTarget2 || {}
+        }
+      });
+    }
     return;
   } catch (error) {
     console.log("Error in addLnbitTposUser:", error);
@@ -263,7 +271,7 @@ const addLnurlpAddress = async (adminKey, getUserToken, accountType, email, lnad
     // }
 
   } catch (error) {
-    console.log("addLnurlpAddress error",error)
+    console.log("addLnurlpAddress error", error)
   }
 }
 
@@ -304,12 +312,12 @@ const addLnbitSpendUser = async (madhouseWallet, email, accountType = 1, attempt
     let lnaddress = await (newEmail.split('@')[0]).replace(/[^a-zA-Z0-9]/g, '');
     const lnurlp = await createLnurlpLink(lnaddress, walletId, adminKey, getUserToken, accountType);
     // const withdraw = await createWithdrawLink(adminKey, getUserToken, accountType);
-        await UsersModel.findOneAndUpdate({ email }, {
-          $set: {
-            lnaddress: lnaddress + "@spend.madhousewallet.com"
-          }
-        });
-    addLnurlpAddress(adminKey, getUserToken, accountType, email,lnaddress);
+    await UsersModel.findOneAndUpdate({ email }, {
+      $set: {
+        lnaddress: lnaddress + "@spend.madhousewallet.com"
+      }
+    });
+    addLnurlpAddress(adminKey, getUserToken, accountType, email, lnaddress);
     // updateWithdrawLinkByWallet(walletId, { uses: 100000000 });
     return refund_address;
   } catch (error) {

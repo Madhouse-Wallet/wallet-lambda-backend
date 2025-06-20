@@ -26,7 +26,7 @@ const logIn = async (type = 1) => {
       }),
     });
     response = await response.json();
-    
+
     if (response?.access_token) {
       return {
         status: true,
@@ -491,6 +491,174 @@ const getUser = async (id, token, type = 1) => {
     };
   }
 };
+
+
+const getAutoSwapsList = async (apiKey, token, type = 1) => {
+  try {
+    let backendUrl = "";
+    if (type == 1) {
+      backendUrl = process.env.LNBIT_URL;
+    } else {
+      backendUrl = process.env.LNBIT_URL_2;
+    }
+    //process.env.NEXT_PUBLIC_TBTC_PRICE_CONTRACT_ADDRESS
+    let response = await fetch(`${backendUrl}boltz/api/v1/swap/reverse/auto?all_wallets=false&api-key=${apiKey}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Cookie: `cookie_access_token=${token}; is_lnbits_user_authorized=true`,
+        "X-API-KEY": apiKey,
+      },
+    });
+    response = await response.json();
+    console.log("response getAutoSwapsList", response)
+    return {
+      status: true,
+      data: response,
+    };
+  } catch (error) {
+    console.error("lnbit login API Error:", error);
+    return {
+      status: false,
+      msg: "fetch failed",
+    };
+  }
+};
+
+const delAutoSwap = async (id, apiKey, token, type = 1) => {
+  try {
+    let backendUrl = "";
+    if (type == 1) {
+      backendUrl = process.env.LNBIT_URL;
+    } else {
+      backendUrl = process.env.LNBIT_URL_2;
+    }
+    //process.env.NEXT_PUBLIC_TBTC_PRICE_CONTRACT_ADDRESS
+    let response = await fetch(`${backendUrl}boltz/api/v1/swap/reverse/auto/${id}?api-key=${apiKey}`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+        Cookie: `cookie_access_token=${token}; is_lnbits_user_authorized=true`,
+        "X-API-KEY": apiKey,
+      },
+    });
+    response = await response.json();
+    console.log("response delAutoSwap", response)
+    return {
+      status: true,
+      data: response,
+    };
+  } catch (error) {
+    console.error("lnbit login API Error:", error);
+    return {
+      status: false,
+      msg: "fetch failed",
+    };
+  }
+};
+
+const getTposList = async (apiKey, token, type = 1) => {
+  try {
+    let backendUrl = "";
+    if (type == 1) {
+      backendUrl = process.env.LNBIT_URL;
+    } else {
+      backendUrl = process.env.LNBIT_URL_2;
+    }
+    //process.env.NEXT_PUBLIC_TBTC_PRICE_CONTRACT_ADDRESS
+    let response = await fetch(`${backendUrl}tpos/api/v1/tposs?all_wallets=false&api-key=${apiKey}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Cookie: `cookie_access_token=${token}; is_lnbits_user_authorized=true`,
+        "X-API-KEY": apiKey,
+      },
+    });
+    response = await response.json();
+    console.log("response getTposList", response)
+    return {
+      status: true,
+      data: response,
+    };
+  } catch (error) {
+    console.error("lnbit login API Error:", error);
+    return {
+      status: false,
+      msg: "fetch failed",
+    };
+  }
+};
+
+
+const updtTposList = async (id, data, apiKey, token, type = 1) => {
+  try {
+    let backendUrl = "";
+    if (type == 1) {
+      backendUrl = process.env.LNBIT_URL;
+    } else {
+      backendUrl = process.env.LNBIT_URL_2;
+    }
+    //process.env.NEXT_PUBLIC_TBTC_PRICE_CONTRACT_ADDRESS
+    let response = await fetch(`${backendUrl}tpos/api/v1/tposs/${id}}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        Cookie: `cookie_access_token=${token}; is_lnbits_user_authorized=true`,
+        "X-API-KEY": apiKey,
+      },
+      body: JSON.stringify(data),
+    });
+    response = await response.json();
+    console.log("response updtTposList", response)
+    return {
+      status: true,
+      data: response,
+    };
+  } catch (error) {
+    console.error("lnbit login API Error:", error);
+    return {
+      status: false,
+      msg: "fetch failed",
+    };
+  }
+};
+
+
+
+const getTargetList = async (apiKey, token, type = 1) => {
+  try {
+    let backendUrl = "";
+    if (type == 1) {
+      backendUrl = process.env.LNBIT_URL;
+    } else {
+      backendUrl = process.env.LNBIT_URL_2;
+    }
+    //process.env.NEXT_PUBLIC_TBTC_PRICE_CONTRACT_ADDRESS
+    let response = await fetch(`${backendUrl}splitpayments/api/v1/targets`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Cookie: `cookie_access_token=${token}; is_lnbits_user_authorized=true`,
+        "X-API-KEY": apiKey,
+      },
+    });
+    response = await response.json();
+    console.log("response getTposList", response)
+    return {
+      status: true,
+      data: response,
+    };
+  } catch (error) {
+    console.error("lnbit login API Error:", error);
+    return {
+      status: false,
+      msg: "fetch failed",
+    };
+  }
+};
+
+
+
 
 const createTpos = async (data, apiKey, token, type = 1) => {
   try {
@@ -1117,6 +1285,8 @@ module.exports = {
   decodeInvoice,
   getWithdraw,
   getDeposit,
-  getPaymentSuccess
+  getPaymentSuccess,
+  getAutoSwapsList,
+  delAutoSwap
 };
 
