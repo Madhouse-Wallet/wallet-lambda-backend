@@ -204,7 +204,7 @@ const splitPaymentTarget = async (data, apiKey, token, type = 1) => {
       body: JSON.stringify(data),
     });
     response = await response.json();
-    // console.log("response splitPaymentTarget", response)
+    console.log("response splitPaymentTarget", response)
 
     if (response?.detail) {
       return {

@@ -156,6 +156,7 @@ const createSplitPayment = async (wallet1, wallet2, apiKey1, apikey2, token, acc
       }]
     }, apiKey1, token, accountType);
     if (split1?.status) result.splitPaymentTarget1 = split1.data;
+    console.log("split1-->",split1)
 
     let split2 = await splitPaymentTarget({
       targets: [{
@@ -165,6 +166,7 @@ const createSplitPayment = async (wallet1, wallet2, apiKey1, apikey2, token, acc
         source: { id: wallet2, adminkey: apikey2 }
       }]
     }, apikey2, token, accountType);
+    console.log("split2-->",split2)
     if (split2?.status) result.splitPaymentTarget2 = split2.data;
 
     return result;
