@@ -53,7 +53,7 @@ const createLnbitUser = async (username, newEmail, accountType) => {
 const checkAddLnurlpAddress = async (wallet, adminKey, getUserToken, accountType, email, lnaddress, spendLnurlpLink = "") => {
   try {
     const getLnurlpLinks = await getPayLnurlpLink(adminKey, getUserToken, accountType);
-    console.log("line 55 userData", userData)
+    console.log("line 55 userData", getLnurlpLinks)
     if (getLnurlpLinks?.status) {
       console.log(getLnurlpLinks.data, getLnurlpLinks.data?.length > 0)
       if (getLnurlpLinks.data?.length > 0) {
@@ -150,6 +150,7 @@ const addLnurlpAddress = async (adminKey, getUserToken, accountType, email, lnad
 const checkSpendWallet = async (data = {}, username) => {
   try {
     let userData = data || "";
+    console.log("userData 153-->",userData)
     if (!userData?.lnbitId_3) {
       let createUser = await createLnbitUser(username, userData?.email, 2)
       if (!createUser) {
