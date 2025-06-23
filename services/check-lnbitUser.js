@@ -167,9 +167,7 @@ const checkSpendWallet = async (data = {}, username) => {
       console.log("line 162 userData", userData)
     }
     const getUserToken = (await userLogIn(2, userData?.lnbitId_3)).data.token;
-    console.log("getUserToken--",getUserToken)
-    console.log("171",userData?.lnbitAdminKey_3, getUserToken, 2, userData?.email, (userData?.lnaddress || ""), (userData?.spendLnurlpLink || ""))
-    const checkLnaddress = await checkAddLnurlpAddress(userData?.lnbitAdminKey_3, getUserToken, 2, userData?.email, (userData?.lnaddress || ""), (userData?.spendLnurlpLink || ""));
+    const checkLnaddress = await checkAddLnurlpAddress(userData?.lnbitWalletId_3, userData?.lnbitAdminKey_3, getUserToken, 2, userData?.email, (userData?.lnaddress || ""), (userData?.spendLnurlpLink || ""));
     return (createUser?.walletId);
   } catch (error) {
     console.log("error-->", error)
