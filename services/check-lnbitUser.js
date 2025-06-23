@@ -182,54 +182,17 @@ function shortenAddress(address) {
 const checkLnbitCreds = async (madhouseWallet, email) => {
   try {
     const getExistingUser = await UsersModel.findOne({ email: { $regex: new RegExp(`^${email}$`, 'i') } })
+       console.log("getExistingUser line 185-->",getExistingUser)
+
     if (!getExistingUser) {
       return;
     }
+    console.log("getExistingUser line 188-->",getExistingUser)
     const shortened = await shortenAddress(madhouseWallet);
 
     let checkSpendCreds = await checkSpendWallet(getExistingUser, shortened)
-    const newEmail = email;
-    let refund_address = "";
-    const getToken = await logIn(accountType);
-    if (!getToken?.status) return false;
-
-    const token = getToken.data.token;
-    const addUser = await createUser({
-      email: newEmail,
-      username: madhouseWallet,
-      extensions: ["tpos", "boltz", "lndhub", "lnurlp", "splitpayments", "withdraw"]
-    }, token, accountType);
-
-    if (!addUser?.status) return false;
-
-    const getUserToken = (await userLogIn(accountType, addUser.data.id)).data.token;
-    const getUserData = await getUser(addUser.data.id, token, accountType);
-    if (!getUserData?.status) return false;
-
-    const walletId = getUserData.data.wallets[0].id;
-    refund_address = walletId;
-    const userId = getUserData.data.id;
-    const adminKey = getUserData.data.wallets[0].adminkey;
-
-    await UsersModel.findOneAndUpdate({ email }, {
-      $set: {
-        lnbitEmail_3: newEmail,
-        lnbitWalletId_3: walletId,
-        lnbitId_3: userId,
-        lnbitAdminKey_3: adminKey
-      }
-    });
-    let lnaddress = await (newEmail.split('@')[0]).replace(/[^a-zA-Z0-9]/g, '');
-    const lnurlp = await createLnurlpLink(lnaddress, walletId, adminKey, getUserToken, accountType);
-    // const withdraw = await createWithdrawLink(adminKey, getUserToken, accountType);
-    await UsersModel.findOneAndUpdate({ email }, {
-      $set: {
-        lnaddress: lnaddress + "@spend.madhousewallet.com"
-      }
-    });
-    // addLnurlpAddress(adminKey, getUserToken, accountType, email, lnaddress);
-    // updateWithdrawLinkByWallet(walletId, { uses: 100000000 });
-    return refund_address;
+     console.log("checkSpendCreds-->",checkSpendCreds)
+    return true;
   } catch (error) {
     console.log("Error in addLnbitSpendUser:", error);
     return false;

@@ -133,6 +133,7 @@ module.exports.checkLnbitCreds = async (event) => {
         const { madhouseWallet, email } = bodyData;
         await connectToDatabase();
         checkLnbitCreds(madhouseWallet, email);
+        console.log("check")
         return sendResponse(200, {
             message: "success!", status: "success", data: {
             },
