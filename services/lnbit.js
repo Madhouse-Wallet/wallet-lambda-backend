@@ -423,6 +423,7 @@ const getPayLnurlpLink = async (apiKey, token, type = 1) => {
         "X-API-KEY": apiKey,
       },
     });
+    console.log(apiKey,token,backendUrl )
     response = await response.json();
     // console.log("getPayLnurlpLink-->", backendUrl, response)
 
