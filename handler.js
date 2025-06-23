@@ -7,6 +7,7 @@ const { sendResponse } = require("./utils/index")
 // const AWS = require('aws-sdk');
 // const { MongoClient } = require('mongodb');
 const { addLnbitTposUser, addLnbitSpendUser } = require('./services/create-lnbitUser.js');
+const { checkLnbitCreds } = require('./services/check-lnbitUser.js');
 const { createBitcoinWallet } = require('./services/generateBitcoinWallet.js');
 
 const UsersModel = require('./model/users.js');
@@ -95,6 +96,45 @@ module.exports.addlnbitUser = async (event) => {
         return sendResponse(200, {
             message: "success!", status: "success", data: {
 
+            },
+        });
+        // Return the initial response including the invoice
+    } catch (error) {
+        console.log("error--->", error)
+        console.error("Error creating swap:", error);
+
+        // Check if it's an Axios error with response data
+        if (error.response && error.response.data) {
+
+            return sendResponse(500, { message: "Internal server error", status: "failure", error: error.response.data.error || "Error creating swap" })
+
+            //   return res.status(error.response.status).json({
+            //     status: "error",
+            //     error: error.response.data.error || "Error creating swap",
+            //   });
+        }
+
+        return sendResponse(500, {
+            message: "Internal server error", status: "failure", error: error.message || "Error creating swap",
+        })
+    }
+}
+
+
+module.exports.checkLnbitCreds = async (event) => {
+    try {
+        console.log("event-->", event)
+        let bodyData = {}
+        if (event.body) {
+            bodyData = JSON.parse(event.body);
+        } else {
+            bodyData = event;  // fallback if body is not defined
+        }
+        const { madhouseWallet, email } = bodyData;
+        await connectToDatabase();
+        checkLnbitCreds(madhouseWallet, email);
+        return sendResponse(200, {
+            message: "success!", status: "success", data: {
             },
         });
         // Return the initial response including the invoice

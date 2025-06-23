@@ -86,6 +86,9 @@ functions:
   lnbitCalls:
     timeout: 900
     handler: handler.lnbitCalls
+  checkLnbitCreds:
+    timeout: 900
+    handler: handler.checkLnbitCreds
 
 plugins:
   - serverless-offline

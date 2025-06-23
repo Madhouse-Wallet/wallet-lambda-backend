@@ -1287,6 +1287,9 @@ module.exports = {
   getDeposit,
   getPaymentSuccess,
   getAutoSwapsList,
-  delAutoSwap
+  delAutoSwap,
+  getTposList,
+  updtTposList,
+  getTargetList
 };
 
