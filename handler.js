@@ -1,5 +1,7 @@
 require('dotenv').config();
 const connectToDatabase = require("./db");
+const { ObjectId } = mongoose.Types;
+
 // const connectToDatabaseTest = require("./dbTest");
 const { sendResponse } = require("./utils/index")
 // const { ethers } = require("ethers");
@@ -132,7 +134,7 @@ module.exports.checkLnbitCreds = async (event) => {
         }
         const { madhouseWallet, email } = bodyData;
         await connectToDatabase();
-       let result = await checkLnbitCreds(madhouseWallet, email);
+        let result = await checkLnbitCreds(madhouseWallet, email);
         console.log("check done", result)
         return sendResponse(200, {
             message: "success!", status: "success", data: {
@@ -291,6 +293,10 @@ module.exports.updtUser = async (event) => {
             bodyData = event;  // fallback if body is not defined
         }
         const { findData = {}, updtData = {} } = bodyData;
+
+        if (findData._id) {
+            findData._id = new ObjectId(findData._id);
+        }
         await connectToDatabase();
         // const existingUser = await usersCollection.findOne({ email });
         const existingUser = await UsersModel.findOneAndUpdate(findData, updtData, { returnDocument: "after" });
