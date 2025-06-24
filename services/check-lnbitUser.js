@@ -282,7 +282,7 @@ const checkTposSetting = async (userData, email, tposId, token, adminKey, wallet
       await UsersModel.findOneAndUpdate({ email }, { $set: { lnbitTposData: matched } });
     } else if (type == 2 && !userData?.lnbitTposData_2) {
       await UsersModel.findOneAndUpdate({ email }, { $set: { lnbitTposData_2: matched } });
-    }
+    } 
 
     console.log("✅ Existing TPOS settings are valid. No changes made.");
     return true;
