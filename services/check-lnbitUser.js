@@ -14,191 +14,397 @@ const {
   withdrawLinkCreate,
   getWithdrawLinkCreate,
   getPayLnurlpLink,
-  updateLnurlp
+  updateLnurlp,
+  getTposList,
+  updtTposList
 } = require("./lnbit");
 
 // const { updateWithdrawLinkByWallet } = require("./updateWithdrawLink");
 const UsersModel = require('./users');
 
 
-// Add LNBits User
-const createLnbitUser = async (username, newEmail, accountType) => {
+const isSettingMatching = (responseItem, setting) => {
+  for (const key in setting) {
+    const settingVal = setting[key];
+    const responseVal = responseItem[key];
+
+    // Handle null vs 0 for withdraw_premium (or any falsy nullable values)
+    if (
+      (settingVal === null && responseVal !== null) ||
+      (responseVal === null && settingVal !== null)
+    ) {
+      console.log(`Mismatch on key "${key}": setting=${settingVal}, response=${responseVal}`);
+      return false;
+    }
+
+    if (settingVal !== responseVal) {
+      console.log(`Mismatch on key "${key}": setting=${settingVal}, response=${responseVal}`);
+      return false;
+    }
+  }
+  return true;
+};
+
+const createLnbitUser = async (username, email, accountType) => {
   try {
-    const getToken = await logIn(accountType);
-    if (!getToken?.status) return false;
-    const token = getToken.data.token;
-    const addUser = await createUser({
-      email: newEmail,
-      username: username,
+    const res = await logIn(accountType);
+    if (!res?.status) return false;
+
+    const token = res.data.token;
+    const user = await createUser({
+      email,
+      username,
       extensions: ["tpos", "boltz", "lndhub", "lnurlp", "splitpayments", "withdraw"]
     }, token, accountType);
-    if (!addUser?.status) return false;
-    // const getUserToken = (await userLogIn(accountType, addUser.data.id)).data.token;
-    const getUserData = await getUser(addUser.data.id, token, accountType);
-    if (!getUserData?.status) return false;
+
+    if (!user?.status) return false;
+
+    const userData = await getUser(user.data.id, token, accountType);
+    if (!userData?.status) return false;
+
+    const wallet = userData.data.wallets[0];
     return {
-      walletId: getUserData.data.wallets[0].id,
-      userId: getUserData.data.id,
-      adminKey: getUserData.data.wallets[0].adminkey,
+      walletId: wallet.id,
+      userId: userData.data.id,
+      adminKey: wallet.adminkey,
       token
     };
-
   } catch (error) {
-    console.log("line 47 error-->",error)
-    return false;
-  }
-}
-
-
-const checkAddLnurlpAddress = async (wallet, adminKey, getUserToken, accountType, email, lnaddress, spendLnurlpLink = "") => {
-  try {
-    const getLnurlpLinks = await getPayLnurlpLink(adminKey, getUserToken, accountType);
-    console.log("line 55 userData", getLnurlpLinks)
-    if (getLnurlpLinks?.status) {
-      console.log(getLnurlpLinks.data, getLnurlpLinks.data?.length > 0)
-      if (getLnurlpLinks.data?.length > 0) {
-        if (getLnurlpLinks.data[0].username && (getLnurlpLinks.data[0].username == lnaddress)) {
-          if (!spendLnurlpLink) {
-            await UsersModel.findOneAndUpdate({ email }, {
-              $set: {
-                spendLnurlpLink: getLnurlpLinks.data[0],
-              }
-            });
-            return true
-          }
-        } else {
-          let newUsername = (lnaddress || await (email.split('@')[0]).replace(/[^a-zA-Z0-9]/g, ''));
-          let oldData = getLnurlpLinks.data[0]
-          const udptUrl = (await updateLnurlp(
-            {
-              ...oldData,
-              username: newUsername
-            },
-            adminKey,
-            getUserToken,
-            2,
-            oldData.id
-          ));
-          console.log("line 81 udptUrl-->", udptUrl)
-          if (udptUrl?.status) {
-           let updtUsers = await UsersModel.findOneAndUpdate({ email }, {
-              $set: {
-                spendLnurlpLink: udptUrl.data,
-                lnaddress: (newUsername + "@spend.madhousewallet.com")
-              }
-            });
-            console.log("line 88 -->",updtUsers)
-          }
-          return true;
-        }
-      } else {
-        let newUsername = (await (email.split('@')[0]).replace(/[^a-zA-Z0-9]/g, ''));
-
-        let setting = {
-          description: "send",
-          min: 10,
-          max: 10000000,
-          currency: null,
-          username: newUsername,
-          wallet
-        };
-       
-        let lnurlp = await lnurlpCreate(setting, apiKey, token, accountType);
-        console.log("lnurlp line 104-->", lnurlp)
-        addLnurlpAddress(adminKey, getUserToken, accountType, email, lnaddress);
-        return true;
-      }
-    }
-  } catch (error) {
-    console.log("addLnurlpAddress error", error)
-    return false;
-  }
-}
-
-const addLnurlpAddress = async (adminKey, getUserToken, accountType, email, lnaddress) => {
-  try {
-    const getLnurlpLinks = await getPayLnurlpLink(adminKey, getUserToken, accountType);
-    if (getLnurlpLinks?.status) {
-      console.log(getLnurlpLinks.data, getLnurlpLinks.data?.length > 0)
-      if (getLnurlpLinks.data?.length > 0) {
-        await UsersModel.findOneAndUpdate({ email }, {
-          $set: {
-            spendLnurlpLink: getLnurlpLinks.data[0] || {}
-          }
-        });
-      }
-    }
-    // const getWithdrawLinks = await getWithdrawLinkCreate(adminKey, getUserToken, accountType);
-    // if (getWithdrawLinks?.status) {
-    //   console.log(getWithdrawLinks.data.data, getWithdrawLinks.data.data?.length > 0)
-    //   if (getWithdrawLinks.data.data?.length > 0) {
-    //     await UsersModel.findOneAndUpdate({ email }, {
-    //       $set: {
-    //         spendWithdrawLink: getWithdrawLinks.data.data[0] || {},
-    //         lnaddress: lnaddress + "@spend.madhousewallet.com"
-    //       }
-    //     });
-    //   }
-    // }
-
-  } catch (error) {
-    console.log("addLnurlpAddress error", error)
-  }
-}
-
-
-const checkSpendWallet = async (data = {}, username) => {
-  try {
-    let userData = data || "";
-    console.log("userData 153-->",userData)
-    if (!userData?.lnbitId_3) {
-      let createUser = await createLnbitUser(username, userData?.email, 2)
-      if (!createUser) {
-        return false;
-      }
-      userData = await UsersModel.findOneAndUpdate({ email: userData?.email }, {
-        $set: {
-          lnbitEmail_3: userData?.email,
-          lnbitWalletId_3: createUser?.walletId,
-          lnbitId_3: createUser?.userId,
-          lnbitAdminKey_3: createUser?.adminKey
-        }
-      });
-      console.log("line 162 userData", userData)
-    }
-    const getUserToken = (await userLogIn(2, userData?.lnbitId_3)).data.token;
-    const checkLnaddress = await checkAddLnurlpAddress(userData?.lnbitWalletId_3, userData?.lnbitAdminKey_3, getUserToken, 2, userData?.email, (userData?.lnaddress || ""), (userData?.spendLnurlpLink || ""));
-    return (createUser?.walletId);
-  } catch (error) {
-    console.log("error-->", error)
-    return false;
-  }
-}
-
-function shortenAddress(address) {
-  if (!address || address.length < 10) return address;
-  return `${address.slice(0, 6)}${address.slice(-4)}`;
-}
-
-const checkLnbitCreds = async (madhouseWallet, email) => {
-  try {
-    const getExistingUser = await UsersModel.findOne({ email: { $regex: new RegExp(`^${email}$`, 'i') } })
-       console.log("getExistingUser line 185-->",getExistingUser)
-
-    if (!getExistingUser) {
-      return;
-    }
-    console.log("getExistingUser line 188-->",getExistingUser)
-    const shortened = await shortenAddress(madhouseWallet);
-
-    let checkSpendCreds = await checkSpendWallet(getExistingUser, shortened)
-     console.log("checkSpendCreds-->",checkSpendCreds)
-    return true;
-  } catch (error) {
-    console.log("Error in addLnbitSpendUser:", error);
+    console.log("createLnbitUser error:", error);
     return false;
   }
 };
+
+const addLnurlpAddress = async (adminKey, token, accountType, email) => {
+  try {
+    const res = await getPayLnurlpLink(adminKey, token, accountType);
+    if (res?.status && res.data?.length > 0) {
+      await UsersModel.findOneAndUpdate({ email }, {
+        $set: { spendLnurlpLink: res.data[0] || {} }
+      });
+    }
+  } catch (error) {
+    console.log("addLnurlpAddress error:", error);
+  }
+};
+
+const checkAddLnurlpAddress = async (wallet, adminKey, token, accountType, email, lnaddress, existingLink = "") => {
+  try {
+    const res = await getPayLnurlpLink(adminKey, token, accountType);
+
+    console.log("res getPayLnurlpLink line 71-->", res)
+    const link = res?.data?.[0];
+
+
+    // match lnaddress and link and return data
+    if (link?.username && link?.username == lnaddress) {
+      if (!existingLink) {
+        await UsersModel.findOneAndUpdate({ email }, { $set: { spendLnurlpLink: link } });
+        console.log("spendLnurlpLink updated!")
+        return true;
+      } else {
+        console.log("already up to date!")
+        return true;
+      }
+    }
+
+    const newUsername = lnaddress || email.split('@')[0].replace(/[^a-zA-Z0-9]/g, '');
+
+    // update lnaddress with link and return
+    if (link) {
+      const updated = await updateLnurlp({ ...link, username: newUsername }, adminKey, token, 2, link.id);
+      if (updated?.status) {
+        console.log("updated lnaddress with link!")
+
+        await UsersModel.findOneAndUpdate({ email }, {
+          $set: {
+            spendLnurlpLink: updated.data,
+            lnaddress: `${newUsername}@spend.madhousewallet.com`
+          }
+        });
+      }
+      return true;
+    }
+
+
+    // create link if not created before and return data
+    const lnurlp = await lnurlpCreate({
+      description: "send",
+      min: 10,
+      max: 10000000,
+      currency: null,
+      username: newUsername,
+      wallet
+    }, adminKey, token, accountType);
+
+    console.log("lnurlp created:", lnurlp);
+    addLnurlpAddress(adminKey, token, accountType, email);
+    return true;
+  } catch (error) {
+    console.log("checkAddLnurlpAddress error:", error);
+    return false;
+  }
+};
+
+const checkSpendWallet = async (userData = {}, username) => {
+  try {
+    let localUser = { ...userData };
+
+    // Create spend LNBits user if not exists
+    if (!localUser?.lnbitId_3) {
+      const newUser = await createLnbitUser(username, localUser.email, 2);
+      if (!newUser) return false;
+
+      // Update DB and local object
+      await UsersModel.findOneAndUpdate(
+        { email: localUser.email },
+        {
+          $set: {
+            lnbitEmail_3: localUser.email,
+            lnbitWalletId_3: newUser.walletId,
+            lnbitId_3: newUser.userId,
+            lnbitAdminKey_3: newUser.adminKey
+          }
+        }
+      );
+
+      // Update localUser with new data
+      localUser = {
+        ...localUser,
+        lnbitWalletId_3: newUser.walletId,
+        lnbitId_3: newUser.userId,
+        lnbitAdminKey_3: newUser.adminKey
+      };
+    }
+
+    // Get user token and check LNURLp address
+    const token = (await userLogIn(2, localUser.lnbitId_3)).data.token;
+
+
+    // check lnurl address 
+    await checkAddLnurlpAddress(
+      localUser.lnbitWalletId_3,
+      localUser.lnbitAdminKey_3,
+      token,
+      2,
+      localUser.email,
+      localUser?.lnaddress || "",
+      localUser?.spendLnurlpLink || ""
+    );
+
+    return localUser.lnbitWalletId_3;
+  } catch (error) {
+    console.log("checkSpendWallet error:", error);
+    return false;
+  }
+};
+
+
+const checkTposSetting = async (userData, email, tposId, token, adminKey, wallet, type) => {
+  try {
+    const compareObj = {
+      currency: "sats",
+      tax_inclusive: true,
+      withdraw_time: 0,
+      withdraw_between: 10,
+      lnaddress: true,
+      lnaddress_cut: 1
+    };
+
+    const defaultSetting = {
+      ...compareObj,
+      tax_default: 0,
+      tip_options: "[]",
+      tip_wallet: "",
+      withdraw_time_option: "",
+      withdraw_premium: 0,
+      withdraw_pin_disabled: false
+    };
+
+    // Helper to update user DB
+    const updateUserTposData = async (tposData) => {
+      const update = type === 1
+        ? { lnbitLinkId: tposData.id, lnbitTposData: tposData }
+        : { lnbitLinkId_2: tposData.id, lnbitTposData_2: tposData };
+      await UsersModel.findOneAndUpdate({ email }, { $set: update });
+    };
+
+    // 🔧 Helper to create new TPOS and update DB
+    const createAndSaveTpos = async () => {
+      const createRes = await createTpos({ wallet, name: "usdc", ...defaultSetting }, adminKey, token, accountType);
+      if (createRes?.status) {
+        await updateUserTposData(createRes.data);
+        console.log("✅ Created new TPOS and saved to DB:", createRes.data.id);
+        return createRes.data.id;
+      } else {
+        console.error("❌ Failed to create TPOS");
+        return false;
+      }
+    };
+
+    // 🚫 No TPOS ID provided, create a new one
+    if (!tposId) return await createAndSaveTpos();
+
+    // 📦 Fetch all TPOS links
+    const res = await getTposList(adminKey, token, 1);
+    console.log("res getTposList line 250", res)
+    if (!res?.status || !Array.isArray(res.data)) return false;
+
+    const tposList = res.data;
+
+    // 🔍 Match TPOS ID and wallet
+    const matched = tposList.find(item => item.id === tposId && item.wallet === wallet);
+    console.log("matched-->",matched)
+    if (!matched) {
+      console.log("⚠️ No matching TPOS found. Creating new one.");
+      return await createAndSaveTpos();
+    }
+
+    console.log("✅ Matching TPOS found:", matched.id);
+
+    // 🧾 Check if TPOS settings match
+    const isMatch = await isSettingMatching(matched, compareObj);
+    if (!isMatch) {
+      // 🔄 Update settings
+      const updateRes = await updtTposList(matched.id, { ...matched, ...compareObj }, adminKey, token, 1);
+      console.log("updateRes line 269 -->", updateRes)
+      if (updateRes?.status && updateRes.data) {
+        await updateUserTposData(updateRes.data);
+        console.log("🔄 TPOS settings updated and saved.");
+        return true;
+      }
+      console.error("❌ Failed to update TPOS settings.");
+      return false;
+    }
+
+    // ✅ Settings already match, ensure userData is synced
+    if (type === 1 && !userData?.lnbitTposData) {
+      await UsersModel.findOneAndUpdate({ email }, { $set: { lnbitTposData: matched } });
+    } else if (type === 2 && !userData?.lnbitTposData_2) {
+      await UsersModel.findOneAndUpdate({ email }, { $set: { lnbitTposData_2: matched } });
+    }
+
+    console.log("✅ Existing TPOS settings are valid. No changes made.");
+    return true;
+
+  } catch (error) {
+    console.error("💥 checkTposSetting error -->", error);
+    return false;
+  }
+};
+
+
+const checkLnbitWallet = async (userData = {}, username, refund_address) => {
+  try {
+    let localUser = { ...userData };
+    let adminToken = "";
+    let getUserToken = "";
+
+    // Helper function to update user in DB and local object
+    const updateUserData = async (updates) => {
+      await UsersModel.findOneAndUpdate({ email: localUser.email }, { $set: updates });
+      localUser = { ...localUser, ...updates };
+    };
+
+    // Step 1: Create LNBits user if not exists
+    if (!localUser?.lnbitId) {
+      const newUser = await createLnbitUser(username, localUser.email, 1);
+      if (!newUser) return false;
+
+      await updateUserData({
+        lnbitEmail: localUser.email,
+        lnbitWalletId: newUser.walletId,
+        lnbitId: newUser.userId,
+        lnbitAdminKey: newUser.adminKey
+      });
+
+      adminToken = newUser.token;
+      const userLoginResp = await userLogIn(1, newUser.userId);
+      getUserToken = userLoginResp?.data?.token;
+
+    } else {
+      // Step 2: Login as admin and user
+      const adminLogin = await logIn(1);
+      if (!adminLogin?.status) return false;
+
+      const userLoginResp = await userLogIn(1, localUser.lnbitId);
+      getUserToken = userLoginResp?.data?.token;
+      adminToken = adminLogin.data.token;
+    }
+
+    // Step 3: Check for second wallet, if not exists create and update
+    if (!localUser?.lnbitId_2) {
+      const newWallet = await addUserWallet(localUser.lnbitId, { name: "bitcoin", currency: "USD" }, adminToken, 1);
+      if (!newWallet?.status) return;
+
+      const userDataResp = await getUser(localUser.lnbitId, adminToken, 1);
+      if (!userDataResp?.status) return;
+
+      const secondWallet = userDataResp.data.wallets[1];
+      if (!secondWallet) return;
+
+      await updateUserData({
+        lnbitEmail_2: localUser.email,
+        lnbitWalletId_2: secondWallet.id,
+        lnbitId_2: localUser.lnbitId,
+        lnbitAdminKey_2: secondWallet.adminkey
+      });
+    }
+
+    // Step 4: Check TPoS settings for both wallets
+    if (localUser?.lnbitAdminKey && localUser?.lnbitWalletId) {
+      await checkTposSetting(
+        localUser,
+        localUser.email,
+        localUser?.lnbitLinkId || "",
+        getUserToken,
+        localUser?.lnbitAdminKey,
+        localUser?.lnbitWalletId,
+        1
+      );
+    }
+
+    if (localUser?.lnbitAdminKey_2 && localUser?.lnbitWalletId_2) {
+      await checkTposSetting(
+        localUser,
+        localUser.email,
+        localUser?.lnbitLinkId_2 || "",
+        getUserToken,
+        localUser?.lnbitAdminKey_2,
+        localUser?.lnbitWalletId_2,
+        2
+      );
+    }
+
+    return true;
+  } catch (error) {
+    console.error("checkLnbitWallet error:", error);
+    return false;
+  }
+};
+
+
+
+const shortenAddress = address => address?.length >= 10
+  ? `${address.slice(0, 6)}${address.slice(-4)}`
+  : address;
+
+const checkLnbitCreds = async (wallet, email) => {
+  try {
+    const user = await UsersModel.findOne({ email: { $regex: new RegExp(`^${email}$`, 'i') } });
+    if (!user) return;
+
+    const shortName = shortenAddress(wallet);
+    const refund_address = await checkSpendWallet(user, shortName);
+    const checkLnbitUSer = await checkLnbitWallet(user, shortName)
+
+    return refund_address;
+  } catch (error) {
+    console.log("checkLnbitCreds error:", error);
+    return false;
+  }
+};
+
 
 
 module.exports = {
