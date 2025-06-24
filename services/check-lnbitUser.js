@@ -148,7 +148,8 @@ const checkAddLnurlpAddress = async (wallet, adminKey, token, accountType, email
 
 const checkSpendWallet = async (userData = {}, username) => {
   try {
-    let localUser = { ...userData };
+    console.log("line userData 151",userData)
+       let  localUser = userData?.toObject ? userData.toObject() : userData;
     console.log("localUser line 152", localUser)
     // Create spend LNBits user if not exists
     if (!localUser?.lnbitId_3) {
@@ -296,8 +297,8 @@ const checkTposSetting = async (userData, email, tposId, token, adminKey, wallet
 
 const checkLnbitWallet = async (userData = {}, username, refund_address) => {
   try {
-    console.log("start lnbit check")
-    let localUser = { ...userData };
+    console.log("start lnbit check", userData)
+    let  localUser = userData?.toObject ? userData.toObject() : userData;
     let adminToken = "";
     let getUserToken = "";
     console.log("localUser line 303-->", localUser)
