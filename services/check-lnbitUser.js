@@ -149,7 +149,7 @@ const checkAddLnurlpAddress = async (wallet, adminKey, token, accountType, email
 const checkSpendWallet = async (userData = {}, username) => {
   try {
     let localUser = { ...userData };
-
+    console.log("localUser line 152", localUser)
     // Create spend LNBits user if not exists
     if (!localUser?.lnbitId_3) {
       const newUser = await createLnbitUser(username, localUser.email, 2);
@@ -180,7 +180,7 @@ const checkSpendWallet = async (userData = {}, username) => {
     // Get user token and check LNURLp address
     const token = (await userLogIn(2, localUser.lnbitId_3)).data.token;
 
-
+    console.log("token line 152", token)
     // check lnurl address 
     await checkAddLnurlpAddress(
       localUser.lnbitWalletId_3,
@@ -254,7 +254,7 @@ const checkTposSetting = async (userData, email, tposId, token, adminKey, wallet
 
     // 🔍 Match TPOS ID and wallet
     const matched = tposList.find(item => item.id === tposId && item.wallet === wallet);
-    console.log("matched-->",matched)
+    console.log("matched-->", matched)
     if (!matched) {
       console.log("⚠️ No matching TPOS found. Creating new one.");
       return await createAndSaveTpos();
@@ -282,7 +282,7 @@ const checkTposSetting = async (userData, email, tposId, token, adminKey, wallet
       await UsersModel.findOneAndUpdate({ email }, { $set: { lnbitTposData: matched } });
     } else if (type == 2 && !userData?.lnbitTposData_2) {
       await UsersModel.findOneAndUpdate({ email }, { $set: { lnbitTposData_2: matched } });
-    } 
+    }
 
     console.log("✅ Existing TPOS settings are valid. No changes made.");
     return true;
@@ -300,7 +300,7 @@ const checkLnbitWallet = async (userData = {}, username, refund_address) => {
     let localUser = { ...userData };
     let adminToken = "";
     let getUserToken = "";
-
+    console.log("localUser line 303-->", localUser)
     // Helper function to update user in DB and local object
     const updateUserData = async (updates) => {
       await UsersModel.findOneAndUpdate({ email: localUser.email }, { $set: updates });
@@ -397,9 +397,9 @@ const checkLnbitCreds = async (wallet, email) => {
 
     const shortName = shortenAddress(wallet);
     const refund_address = await checkSpendWallet(user, shortName);
-    console.log("refund_address-->",refund_address)
+    console.log("refund_address-->", refund_address)
     const checkLnbitUSer = await checkLnbitWallet(user, shortName)
-
+    console.log("checkLnbitUSer-->", checkLnbitUSer)
     return refund_address;
   } catch (error) {
     console.log("checkLnbitCreds error:", error);

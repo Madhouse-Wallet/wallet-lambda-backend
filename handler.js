@@ -132,8 +132,8 @@ module.exports.checkLnbitCreds = async (event) => {
         }
         const { madhouseWallet, email } = bodyData;
         await connectToDatabase();
-        await checkLnbitCreds(madhouseWallet, email);
-        console.log("check")
+       let result = await checkLnbitCreds(madhouseWallet, email);
+        console.log("check done", result)
         return sendResponse(200, {
             message: "success!", status: "success", data: {
             },
