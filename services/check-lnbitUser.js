@@ -16,7 +16,9 @@ const {
   getPayLnurlpLink,
   updateLnurlp,
   getTposList,
-  updtTposList
+  updtTposList,
+  getAutoSwapsList,
+  delAutoSwap,
 } = require("./lnbit");
 
 // const { updateWithdrawLinkByWallet } = require("./updateWithdrawLink");
@@ -25,8 +27,8 @@ const UsersModel = require('./users');
 
 const isSettingMatching = async (responseItem, setting) => {
 
-  console.log("responseItem",responseItem)
-  console.log( "setting",setting)
+  console.log("responseItem", responseItem)
+  console.log("setting", setting)
   for (const key in setting) {
     const settingVal = setting[key];
     const responseVal = responseItem[key];
@@ -151,8 +153,8 @@ const checkAddLnurlpAddress = async (wallet, adminKey, token, accountType, email
 
 const checkSpendWallet = async (userData = {}, username) => {
   try {
-    console.log("line userData 151",userData)
-       let  localUser = userData?.toObject ? userData.toObject() : userData;
+    console.log("line userData 151", userData)
+    let localUser = userData?.toObject ? userData.toObject() : userData;
     console.log("localUser line 152", localUser)
     // Create spend LNBits user if not exists
     if (!localUser?.lnbitId_3) {
@@ -206,8 +208,8 @@ const checkSpendWallet = async (userData = {}, username) => {
 
 const checkTposSetting = async (userData, email, tposId, token, adminKey, wallet, type) => {
   try {
-    console.log("checkTposSetting caliing",type)
-      console.log("checkTposSetting",userData, email, tposId, token, adminKey, wallet, type)
+    console.log("checkTposSetting caliing", type)
+    console.log("checkTposSetting", userData, email, tposId, token, adminKey, wallet, type)
     const compareObj = {
       currency: "sats",
       tax_inclusive: true,
@@ -270,7 +272,7 @@ const checkTposSetting = async (userData, email, tposId, token, adminKey, wallet
 
     // 🧾 Check if TPOS settings match
     const isMatch = await isSettingMatching(matched, compareObj);
-    console.log("isMatch-->",isMatch)
+    console.log("isMatch-->", isMatch)
     if (!isMatch) {
       // 🔄 Update settings
       const updateRes = await updtTposList(matched.id, { ...matched, ...compareObj }, adminKey, token, 1);
@@ -300,11 +302,46 @@ const checkTposSetting = async (userData, email, tposId, token, adminKey, wallet
   }
 };
 
+const checkAutoSwap = async (token, adminKey) => {
+  try {
+    // Fetch all auto swaps using provided admin key and token
+    const response = await getAutoSwapsList(adminKey, token, 1);
+
+    // Return true if no auto swaps found or response is invalid
+    const swaps = response?.data;
+    if (!response?.status || !Array.isArray(swaps) || swaps.length === 0) {
+      return true;
+    }
+
+    // Delete all auto swaps in parallel for efficiency
+    // Delete all swaps in parallel
+    await Promise.all(
+      swaps.map(async (swap) => {
+        try {
+          const result = await delAutoSwap(swap.id, adminKey, token, 1);
+          if (result?.status) {
+            console.log(`✅ Successfully deleted auto swap ID: ${swap.id}`);
+          } else {
+            console.log(`⚠️ Failed to delete auto swap ID: ${swap.id}`, result);
+          }
+        } catch (err) {
+          console.log(`❌ Error deleting auto swap ID ${swap.id}:`, err.message);
+        }
+      })
+    );
+
+    return true;
+  } catch (error) {
+    console.error("checkAutoSwap error -->", error);
+    return false;
+  }
+};
+
 
 const checkLnbitWallet = async (userData = {}, username, refund_address) => {
   try {
     console.log("start lnbit check", userData)
-    let  localUser = userData?.toObject ? userData.toObject() : userData;
+    let localUser = userData?.toObject ? userData.toObject() : userData;
     let adminToken = "";
     let getUserToken = "";
     console.log("localUser line 303-->", localUser)
@@ -370,8 +407,9 @@ const checkLnbitWallet = async (userData = {}, username, refund_address) => {
         localUser?.lnbitWalletId,
         1
       );
+      await checkAutoSwap(getUserToken, localUser?.lnbitAdminKey)
     }
- console.log("calling  ", localUser?.lnbitAdminKey_2 , localUser?.lnbitWalletId_2)
+    console.log("calling  ", localUser?.lnbitAdminKey_2, localUser?.lnbitWalletId_2)
     if (localUser?.lnbitAdminKey_2 && localUser?.lnbitWalletId_2) {
       console.log("calling  checkTposSetting 2nd ")
       await checkTposSetting(
@@ -383,6 +421,9 @@ const checkLnbitWallet = async (userData = {}, username, refund_address) => {
         localUser?.lnbitWalletId_2,
         2
       );
+
+      await checkAutoSwap(getUserToken, localUser?.lnbitAdminKey_2)
+
     }
 
     return true;
