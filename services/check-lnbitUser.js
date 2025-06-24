@@ -23,7 +23,7 @@ const {
 const UsersModel = require('./users');
 
 
-const isSettingMatching = (responseItem, setting) => {
+const isSettingMatching = async (responseItem, setting) => {
   for (const key in setting) {
     const settingVal = setting[key];
     const responseVal = responseItem[key];
@@ -265,6 +265,7 @@ const checkTposSetting = async (userData, email, tposId, token, adminKey, wallet
 
     // 🧾 Check if TPOS settings match
     const isMatch = await isSettingMatching(matched, compareObj);
+    console.log("isMatch-->",isMatch)
     if (!isMatch) {
       // 🔄 Update settings
       const updateRes = await updtTposList(matched.id, { ...matched, ...compareObj }, adminKey, token, 1);
