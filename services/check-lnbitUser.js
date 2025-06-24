@@ -439,7 +439,7 @@ const checkAutoSwap = async (token, adminKey) => {
 };
 
 
-const checkLnbitWallet = async (userData = {}, username, refund_address) => {
+const checkLnbitWallet = async (userData = {}, username) => {
   try {
     console.log("start lnbit check", userData)
     let localUser = userData?.toObject ? userData.toObject() : userData;
@@ -548,11 +548,11 @@ const checkLnbitCreds = async (wallet, email) => {
     if (!user) return;
 
     const shortName = shortenAddress(wallet);
-    const refund_address = await checkSpendWallet(user, shortName);
-    console.log("refund_address-->", refund_address)
+    const spendWallet = await checkSpendWallet(user, shortName);
+    console.log("spendWallet-->", spendWallet)
     const checkLnbitUSer = await checkLnbitWallet(user, shortName)
     console.log("checkLnbitUSer-->", checkLnbitUSer)
-    return refund_address;
+    return spendWallet;
   } catch (error) {
     console.log("checkLnbitCreds error:", error);
     return false;
