@@ -593,6 +593,7 @@ const getTposList = async (apiKey, token, type = 1) => {
 
 const updtTposList = async (id, data, apiKey, token, type = 1) => {
   try {
+    // console.log("updtTposList args", id, data, apiKey, token, type)
     let backendUrl = "";
     if (type == 1) {
       backendUrl = process.env.LNBIT_URL;
@@ -600,7 +601,7 @@ const updtTposList = async (id, data, apiKey, token, type = 1) => {
       backendUrl = process.env.LNBIT_URL_2;
     }
     //process.env.NEXT_PUBLIC_TBTC_PRICE_CONTRACT_ADDRESS
-    let response = await fetch(`${backendUrl}tpos/api/v1/tposs/${id}}`, {
+    let response = await fetch(`${backendUrl}tpos/api/v1/tposs/${id}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
