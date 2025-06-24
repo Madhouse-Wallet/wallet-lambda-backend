@@ -296,6 +296,7 @@ const checkTposSetting = async (userData, email, tposId, token, adminKey, wallet
 
 const checkLnbitWallet = async (userData = {}, username, refund_address) => {
   try {
+    console.log("start lnbit check")
     let localUser = { ...userData };
     let adminToken = "";
     let getUserToken = "";
@@ -396,6 +397,7 @@ const checkLnbitCreds = async (wallet, email) => {
 
     const shortName = shortenAddress(wallet);
     const refund_address = await checkSpendWallet(user, shortName);
+    console.log("refund_address-->",refund_address)
     const checkLnbitUSer = await checkLnbitWallet(user, shortName)
 
     return refund_address;
