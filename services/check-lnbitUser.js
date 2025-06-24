@@ -278,9 +278,9 @@ const checkTposSetting = async (userData, email, tposId, token, adminKey, wallet
     }
 
     // ✅ Settings already match, ensure userData is synced
-    if (type === 1 && !userData?.lnbitTposData) {
+    if (type == 1 && !userData?.lnbitTposData) {
       await UsersModel.findOneAndUpdate({ email }, { $set: { lnbitTposData: matched } });
-    } else if (type === 2 && !userData?.lnbitTposData_2) {
+    } else if (type == 2 && !userData?.lnbitTposData_2) {
       await UsersModel.findOneAndUpdate({ email }, { $set: { lnbitTposData_2: matched } });
     }
 
