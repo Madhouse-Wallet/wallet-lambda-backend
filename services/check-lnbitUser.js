@@ -206,6 +206,8 @@ const checkSpendWallet = async (userData = {}, username) => {
 
 const checkTposSetting = async (userData, email, tposId, token, adminKey, wallet, type) => {
   try {
+    console.log("checkTposSetting caliing",type)
+      console.log("checkTposSetting",userData, email, tposId, token, adminKey, wallet, type)
     const compareObj = {
       currency: "sats",
       tax_inclusive: true,
@@ -369,8 +371,9 @@ const checkLnbitWallet = async (userData = {}, username, refund_address) => {
         1
       );
     }
-
+ console.log("calling  ", localUser?.lnbitAdminKey_2 , localUser?.lnbitWalletId_2)
     if (localUser?.lnbitAdminKey_2 && localUser?.lnbitWalletId_2) {
+      console.log("calling  checkTposSetting 2nd ")
       await checkTposSetting(
         localUser,
         localUser.email,
