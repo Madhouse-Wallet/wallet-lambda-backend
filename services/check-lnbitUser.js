@@ -19,6 +19,7 @@ const {
   updtTposList,
   getAutoSwapsList,
   delAutoSwap,
+  getTargetList
 } = require("./lnbit");
 
 // const { updateWithdrawLinkByWallet } = require("./updateWithdrawLink");
@@ -42,7 +43,7 @@ const isSettingMatching = async (responseItem, setting) => {
       return false;
     }
 
-    if (settingVal !== responseVal) {
+    if (settingVal != responseVal) {
       console.log(`Mismatch on key "${key}": setting=${settingVal}, response=${responseVal}`);
       return false;
     }
@@ -302,6 +303,106 @@ const checkTposSetting = async (userData, email, tposId, token, adminKey, wallet
   }
 };
 
+
+const checkAllSplitpaymetnsTarget = async (email, token, adminKey, wallet, type) => {
+  try {
+    console.log("Checking LNBits split payment target. Wallet type:", type);
+
+    const compareObj = {
+      wallet: process.env.SPLIT_PAYMENT_ADDRESS,
+      alias: "commision",
+      percent: process.env.SPLIT_PAYMENT_PERCENTAGE,
+      source: wallet,
+    };
+
+    // Helper function to update user's split target in DB
+    const updateUserTarget = async (target) => {
+      const updateField = type === 1 ? "splitPaymentTarget" : "splitPaymentTarget_2";
+      await UsersModel.findOneAndUpdate({ email }, { $set: { [updateField]: target } });
+      console.log(`Updated user ${email} with ${updateField}`);
+    };
+
+    // Helper function to fetch target list again and update DB
+    const updateFromNewCreds = async () => {
+      try {
+        const res = await getTargetList(adminKey, token, 1);
+        if (!res?.status || !Array.isArray(res.data)) {
+          console.warn("Invalid response from getTargetList in updateFromNewCreds");
+          return false;
+        }
+
+        const targets = res.data;
+        if (targets.length > 0) {
+          await updateUserTarget(targets[0]);
+        }
+
+        return true;
+      } catch (err) {
+        console.error("Error inside updateFromNewCreds:", err);
+        return false;
+      }
+    };
+
+    // Fetch current target list
+    const res = await getTargetList(adminKey, token, 1);
+    if (!res?.status || !Array.isArray(res.data)) {
+      console.warn("Invalid response from getTargetList");
+      return false;
+    }
+
+    const targetList = res.data;
+
+    if (targetList.length > 0) {
+      const currentTarget = targetList[0];
+      console.log("Found existing target:", currentTarget);
+
+      const isMatch = await isSettingMatching(currentTarget, compareObj);
+      console.log("Do current settings match?", isMatch);
+
+      if (!isMatch) {
+        console.log("Settings do not match, updating splitPaymentTarget...");
+        await splitPaymentTarget({
+          targets: [{
+            id: currentTarget.id,
+            wallet: compareObj.wallet,
+            alias: compareObj.alias,
+            percent: compareObj.percent,
+            source: { id: wallet, adminkey: adminKey }
+          }]
+        }, adminKey, token, 1);
+      }
+
+      await updateUserTarget(currentTarget);
+    } else {
+      // No target exists, create new one
+      console.log("No existing target found. Creating new splitPaymentTarget...");
+      const createRes = await splitPaymentTarget({
+        targets: [{
+          wallet: compareObj.wallet,
+          alias: compareObj.alias,
+          percent: compareObj.percent,
+          source: { id: wallet, adminkey: adminKey }
+        }]
+      }, adminKey, token, 1);
+
+      if (createRes?.status) {
+        console.log("Successfully created new splitPaymentTarget. Refetching and updating DB...");
+        return await updateFromNewCreds();
+      } else {
+        console.error("Failed to create new splitPaymentTarget:", createRes);
+        return false;
+      }
+    }
+
+    return true;
+
+  } catch (error) {
+    console.error("checkAllSplitpaymetnsTarget error (wallet type:", type, "):", error);
+    return false;
+  }
+};
+
+
 const checkAutoSwap = async (token, adminKey) => {
   try {
     // Fetch all auto swaps using provided admin key and token
@@ -396,7 +497,7 @@ const checkLnbitWallet = async (userData = {}, username, refund_address) => {
       });
     }
 
-    // Step 4: Check TPoS settings for both wallets
+    // Step 4: Check TPoS autoswaps splitpayments settings for both wallets
     if (localUser?.lnbitAdminKey && localUser?.lnbitWalletId) {
       await checkTposSetting(
         localUser,
@@ -408,6 +509,8 @@ const checkLnbitWallet = async (userData = {}, username, refund_address) => {
         1
       );
       await checkAutoSwap(getUserToken, localUser?.lnbitAdminKey)
+
+      await checkAllSplitpaymetnsTarget(localUser.email, getUserToken, localUser?.lnbitAdminKey, localUser?.lnbitWalletId, 1)
     }
     console.log("calling  ", localUser?.lnbitAdminKey_2, localUser?.lnbitWalletId_2)
     if (localUser?.lnbitAdminKey_2 && localUser?.lnbitWalletId_2) {
@@ -423,7 +526,7 @@ const checkLnbitWallet = async (userData = {}, username, refund_address) => {
       );
 
       await checkAutoSwap(getUserToken, localUser?.lnbitAdminKey_2)
-
+      await checkAllSplitpaymetnsTarget(localUser.email, getUserToken, localUser?.lnbitAdminKey_2, localUser?.lnbitWalletId_2, 2)
     }
 
     return true;
