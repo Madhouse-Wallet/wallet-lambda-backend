@@ -24,6 +24,9 @@ const UsersModel = require('./users');
 
 
 const isSettingMatching = async (responseItem, setting) => {
+
+  console.log("responseItem",responseItem)
+  console.log( "setting",setting)
   for (const key in setting) {
     const settingVal = setting[key];
     const responseVal = responseItem[key];
