@@ -86,7 +86,7 @@ const addLnurlpAddress = async (adminKey, token, accountType, email) => {
     const res = await getPayLnurlpLink(adminKey, token, accountType);
     if (res?.status && res.data?.length > 0) {
       await UsersModel.findOneAndUpdate({ email }, {
-        $set: { spendLnurlpLink: res.data[0] || {} }
+        $set: {lnaddress: `${res.data[0].username}@spend.madhousewallet.com`,  spendLnurlpLink: res.data[0] || {} }
       });
     }
   } catch (error) {
