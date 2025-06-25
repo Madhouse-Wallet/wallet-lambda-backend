@@ -240,7 +240,7 @@ const checkTposSetting = async (userData, email, tposId, token, adminKey, wallet
 
     // 🔧 Helper to create new TPOS and update DB
     const createAndSaveTpos = async () => {
-      const createRes = await createTpos({ wallet, name: "usdc", ...defaultSetting }, adminKey, token, accountType);
+      const createRes = await createTpos({ wallet, name: "usdc", ...defaultSetting }, adminKey, token, 1);
       if (createRes?.status) {
         await updateUserTposData(createRes.data);
         console.log("✅ Created new TPOS and saved to DB:", createRes.data.id);
