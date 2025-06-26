@@ -89,6 +89,12 @@ functions:
   checkLnbitCreds:
     timeout: 900
     handler: handler.checkLnbitCreds
+  addPayment:
+    timeout: 900
+    handler: handler.addPayment
+  getUserPayments:
+     timeout: 900
+     handler: handler.getUserPayments 
 
 plugins:
   - serverless-offline
