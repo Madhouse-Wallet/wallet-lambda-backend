@@ -42,7 +42,9 @@ const userSchema = new mongoose.Schema(
     lnbitTposData_2: { type: mongoose.Schema.Types.Mixed, default: {} },
     splitPaymentTarget: { type: mongoose.Schema.Types.Mixed, default: {} },
     splitPaymentTarget_2: { type: mongoose.Schema.Types.Mixed, default: {} },
-    kyc: {type: mongoose.Schema.Types.Mixed, default: "" },
+    kyc: { type: mongoose.Schema.Types.Mixed, default: "" },
+    businessAccountDetail: { type: mongoose.Schema.Types.Mixed, default: {} },
+    receivingPartyDetail: { type: mongoose.Schema.Types.Mixed, default: {} },
     creditCardPass: {
       type: mongoose.Schema.Types.Mixed, default: ""
     }
