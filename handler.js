@@ -295,6 +295,7 @@ module.exports.addPayment = async (event) => {
         } else {
             bodyData = event;  // fallback if body is not defined
         }
+        await connectToDatabase();
         const result = await PaymentModel.create(bodyData);
         return sendResponse(200, {
             message: "Added successfully!", status: "success", data: result,
