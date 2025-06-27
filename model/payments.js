@@ -8,7 +8,8 @@ const paymentSchema = new mongoose.Schema(
         status: { type: String, default: "" },
         validFrom: { type: String, default: "" },
         validTo: { type: String, default: "" },
-        paymentInfo: { type: mongoose.Schema.Types.Mixed, default: {} }
+        paymentInfo: { type: mongoose.Schema.Types.Mixed, default: {} },
+        receivingParty: { type: mongoose.Schema.Types.Mixed, default: {} }
     },
     {
         timestamps: { createdAt: 'createdAt', updatedAt: 'updatedAt' },
