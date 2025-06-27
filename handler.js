@@ -16,7 +16,7 @@ const { createBitcoinWallet } = require('./services/generateBitcoinWallet.js');
 
 const UsersModel = require('./model/users.js');
 const PaymentModel = require('./model/payments.js');
-
+const backupWalletBtctModel = require('./model/backupWalletBtc.js');
 const { logIn,
     createUser,
     getUser,
@@ -316,6 +316,36 @@ module.exports.addPayment = async (event) => {
     }
 }
 
+// backupWalletBtctModel
+module.exports.addWalletBackup = async (event) => {
+    try {
+        // console.log("event-->", event)
+        let bodyData = {}
+        if (event.body) {
+            bodyData = JSON.parse(event.body);
+        } else {
+            bodyData = event;  // fallback if body is not defined
+        }
+        await connectToDatabase();
+        console.log("bodyData-->",bodyData)
+        const result = await backupWalletBtctModel.create(bodyData);
+        return sendResponse(200, {
+            message: "Added successfully!", status: "success", data: result,
+        });
+    } catch (error) {
+        console.log("error--->", error)
+        // Check if it's an Axios error with response data
+        if (error.code === 11000 && error.keyPattern?.email) {
+            return res.status(400).json({ status: "failure", message: 'User Already Exist!', userData: {} });
+        }
+        if (error.response && error.response.data) {
+            return sendResponse(500, { message: "Internal server error", status: "failure", error: error.response.data.error || "Error Finding User!" })
+        }
+        return sendResponse(500, {
+            message: "Internal server error", status: "failure", error: error.message || "Error Finding User!",
+        })
+    }
+}
 
 module.exports.getUserPayments = async (event) => {
     try {

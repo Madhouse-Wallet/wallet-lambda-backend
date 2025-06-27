@@ -93,8 +93,11 @@ functions:
     timeout: 900
     handler: handler.addPayment
   getUserPayments:
-     timeout: 900
-     handler: handler.getUserPayments 
+    timeout: 900
+    handler: handler.getUserPayments 
+  addWalletBackup:
+    timeout: 900
+    handler: handler.addWalletBackup 
 
 plugins:
   - serverless-offline
