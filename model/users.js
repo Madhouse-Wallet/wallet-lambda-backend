@@ -45,6 +45,7 @@ const userSchema = new mongoose.Schema(
     kyc: { type: mongoose.Schema.Types.Mixed, default: "" },
     businessAccountDetail: { type: mongoose.Schema.Types.Mixed, default: {} },
     receivingPartyDetail: { type: mongoose.Schema.Types.Mixed, default: {} },
+    splitPaymentTargetSource: { type: mongoose.Schema.Types.Mixed, default: "" },
     creditCardPass: {
       type: mongoose.Schema.Types.Mixed, default: ""
     }

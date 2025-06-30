@@ -86,7 +86,7 @@ const addLnurlpAddress = async (adminKey, token, accountType, email) => {
     const res = await getPayLnurlpLink(adminKey, token, accountType);
     if (res?.status && res.data?.length > 0) {
       await UsersModel.findOneAndUpdate({ email }, {
-        $set: {lnaddress: `${res.data[0].username}@spend.madhousewallet.com`,  spendLnurlpLink: res.data[0] || {} }
+        $set: { lnaddress: `${res.data[0].username}@spend.madhousewallet.com`, spendLnurlpLink: res.data[0] || {} }
       });
     }
   } catch (error) {
@@ -216,8 +216,8 @@ const checkTposSetting = async (userData, email, tposId, token, adminKey, wallet
       tax_inclusive: true,
       withdraw_time: 0,
       withdraw_between: 10,
-      lnaddress: true,
-      lnaddress_cut: 1
+      lnaddress: false,
+      lnaddress_cut: 0
     };
 
     const defaultSetting = {
@@ -304,12 +304,12 @@ const checkTposSetting = async (userData, email, tposId, token, adminKey, wallet
 };
 
 
-const checkAllSplitpaymetnsTarget = async (email, token, adminKey, wallet, type) => {
+const checkAllSplitpaymetnsTarget = async (userData, email, token, adminKey, wallet, type) => {
   try {
     console.log("Checking LNBits split payment target. Wallet type:", type);
-
+    console.log("userData?.splitPaymentTargetSource", userData?.splitPaymentTargetSource)
     const compareObj = {
-      wallet: process.env.SPLIT_PAYMENT_ADDRESS,
+      wallet: (userData?.splitPaymentTargetSource || process.env.SPLIT_PAYMENT_ADDRESS),
       alias: "commision",
       percent: process.env.SPLIT_PAYMENT_PERCENTAGE,
       source: wallet,
@@ -318,7 +318,7 @@ const checkAllSplitpaymetnsTarget = async (email, token, adminKey, wallet, type)
     // Helper function to update user's split target in DB
     const updateUserTarget = async (target) => {
       const updateField = type === 1 ? "splitPaymentTarget" : "splitPaymentTarget_2";
-      await UsersModel.findOneAndUpdate({ email }, { $set: { [updateField]: target } });
+      await UsersModel.findOneAndUpdate({ email }, { $set: { [updateField]: target, "splitPaymentTargetSource": target.wallet } });
       console.log(`Updated user ${email} with ${updateField}`);
     };
 
@@ -510,7 +510,7 @@ const checkLnbitWallet = async (userData = {}, username) => {
       );
       await checkAutoSwap(getUserToken, localUser?.lnbitAdminKey)
 
-      await checkAllSplitpaymetnsTarget(localUser.email, getUserToken, localUser?.lnbitAdminKey, localUser?.lnbitWalletId, 1)
+      await checkAllSplitpaymetnsTarget(localUser, localUser.email, getUserToken, localUser?.lnbitAdminKey, localUser?.lnbitWalletId, 1)
     }
     console.log("calling  ", localUser?.lnbitAdminKey_2, localUser?.lnbitWalletId_2)
     if (localUser?.lnbitAdminKey_2 && localUser?.lnbitWalletId_2) {
@@ -526,7 +526,7 @@ const checkLnbitWallet = async (userData = {}, username) => {
       );
 
       await checkAutoSwap(getUserToken, localUser?.lnbitAdminKey_2)
-      await checkAllSplitpaymetnsTarget(localUser.email, getUserToken, localUser?.lnbitAdminKey_2, localUser?.lnbitWalletId_2, 2)
+      await checkAllSplitpaymetnsTarget(localUser, localUser.email, getUserToken, localUser?.lnbitAdminKey_2, localUser?.lnbitWalletId_2, 2)
     }
 
     return true;
