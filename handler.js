@@ -296,7 +296,7 @@ module.exports.addPayment = async (event) => {
             bodyData = event;  // fallback if body is not defined
         }
         await connectToDatabase();
-        console.log("bodyData-->",bodyData)
+        console.log("bodyData-->", bodyData)
         const result = await PaymentModel.create(bodyData);
         return sendResponse(200, {
             message: "Added successfully!", status: "success", data: result,
@@ -327,7 +327,7 @@ module.exports.addWalletBackup = async (event) => {
             bodyData = event;  // fallback if body is not defined
         }
         await connectToDatabase();
-        console.log("bodyData-->",bodyData)
+        console.log("bodyData-->", bodyData)
         const result = await backupWalletBtctModel.create(bodyData);
         return sendResponse(200, {
             message: "Added successfully!", status: "success", data: result,
@@ -426,6 +426,60 @@ module.exports.updtUser = async (event) => {
                 message: "No User Found!", status: "failure", error: "No User Found!",
             })
         }
+    } catch (error) {
+        console.log("error--->", error)
+        // Check if it's an Axios error with response data
+        if (error.response && error.response.data) {
+            return sendResponse(500, { message: "Internal server error", status: "failure", error: error.response.data.error || "Error Finding User!" })
+        }
+        return sendResponse(500, {
+            message: "Internal server error", status: "failure", error: error.message || "Error Finding User!",
+        })
+    }
+}
+
+module.exports.updtReceiveObj = async (event) => {
+    try {
+        // console.log("event-->", event)
+        let bodyData = {}
+        if (event.body) {
+            bodyData = JSON.parse(event.body);
+        } else {
+            bodyData = event;  // fallback if body is not defined
+        }
+        const { email, partyId = "" } = bodyData;
+
+
+        await connectToDatabase();
+        const existingUser1 = await usersCollection.findOne({ email });
+        if (existingUser1) {
+
+
+            // Step 2: Filter out matching element from receivingPartyDetail
+            const filteredPartyDetail = Array.isArray(existingUser1.receivingPartyDetail)
+                ? existingUser1.receivingPartyDetail.filter(
+                    (entry) => entry?.data?.id != partyId
+                )
+                : [];
+
+            const existingUser = await UsersModel.findOneAndUpdate({
+                email
+            }, {
+                $set: {
+                    receivingPartyDetail: filteredPartyDetail,
+                }
+            }, { returnDocument: "after" });
+            if (existingUser) {
+                return sendResponse(200, {
+                    message: "User updated successfully!", status: "success", data: existingUser,
+                });
+            } else {
+                return sendResponse(400, {
+                    message: "No User Found!", status: "failure", error: "No User Found!",
+                })
+            }
+        }
+
     } catch (error) {
         console.log("error--->", error)
         // Check if it's an Axios error with response data

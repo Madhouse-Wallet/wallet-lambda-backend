@@ -80,6 +80,9 @@ functions:
   updtUser:
     timeout: 900
     handler: handler.updtUser
+  updtReceiveObj:
+    timeout: 900
+    handler: handler.updtUser 
   getBitcoinWallet:
     timeout: 900
     handler: handler.getBitcoinWallet
