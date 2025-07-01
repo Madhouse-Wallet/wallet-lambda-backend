@@ -451,8 +451,9 @@ module.exports.updtReceiveObj = async (event) => {
         console.log("bodyData", bodyData)
 
         await connectToDatabase();
-        const existingUser1 = await usersCollection.findOne({ email });
-        if (existingUser1) {
+        let existingUser1 = await UsersModel.findOne(
+            { email: { $regex: new RegExp(`^${email}$`, 'i') } }
+        ); if (existingUser1) {
 
             console.log("existingUser1.receivingPartyDetail", existingUser1.receivingPartyDetail)
             // Step 2: Filter out matching element from receivingPartyDetail
