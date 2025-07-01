@@ -448,13 +448,13 @@ module.exports.updtReceiveObj = async (event) => {
             bodyData = event;  // fallback if body is not defined
         }
         const { email, partyId = "" } = bodyData;
-
+        console.log("bodyData", bodyData)
 
         await connectToDatabase();
         const existingUser1 = await usersCollection.findOne({ email });
         if (existingUser1) {
 
-console.log("existingUser1.receivingPartyDetail",existingUser1.receivingPartyDetail)
+            console.log("existingUser1.receivingPartyDetail", existingUser1.receivingPartyDetail)
             // Step 2: Filter out matching element from receivingPartyDetail
             const filteredPartyDetail = Array.isArray(existingUser1.receivingPartyDetail)
                 ? existingUser1.receivingPartyDetail.filter(
