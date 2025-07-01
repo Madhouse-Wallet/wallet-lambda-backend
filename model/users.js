@@ -46,6 +46,7 @@ const userSchema = new mongoose.Schema(
     businessAccountDetail: { type: mongoose.Schema.Types.Mixed, default: {} },
     receivingPartyDetail: { type: [mongoose.Schema.Types.Mixed], default: [] },
     splitPaymentTargetSource: { type: mongoose.Schema.Types.Mixed, default: "" },
+    spherepayId:{ type: mongoose.Schema.Types.Mixed, default: "" },
     creditCardPass: {
       type: mongoose.Schema.Types.Mixed, default: ""
     }
