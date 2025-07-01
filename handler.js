@@ -504,7 +504,9 @@ module.exports.updateKeysName = async (event) => {
         }
  
         await connectToDatabase();
-        let existingUser1 = await UsersModel.find();
+        let existingUser1 = await UsersModel.find({
+            email: "prithapalSingh12345@yopmail.com"
+        });
         for (let i = 0; i < existingUser1.length; i++) {
             if (existingUser1[0]?.passkey && existingUser1[0]?.passkey.length > 0) {
                 const updatedPasskey = existingUser1[0]?.passkey.map(entry => {
