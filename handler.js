@@ -493,6 +493,48 @@ module.exports.updtReceiveObj = async (event) => {
     }
 }
 
+module.exports.updateKeysName = async (event) => {
+    try {
+        // console.log("event-->", event)
+        let bodyData = {}
+        if (event.body) {
+            bodyData = JSON.parse(event.body);
+        } else {
+            bodyData = event;  // fallback if body is not defined
+        }
+ 
+        await connectToDatabase();
+        let existingUser1 = await UsersModel.find();
+        for (let i = 0; i < existingUser1.length; i++) {
+            if (existingUser1[0]?.passkey && existingUser1[0]?.passkey.length > 0) {
+                const updatedPasskey = existingUser1[0]?.passkey.map(entry => {
+                    const { storageKeySecret, credentialIdSecret, ...rest } = entry;
+                    return { storageKeyEncrypt: storageKeySecret, credentialIdEncrypt: credentialIdSecret, ...rest }; // rename `secretID` to `id`
+                });
+                const existingUser = await UsersModel.findOneAndUpdate({
+                    email: existingUser1[0].email
+                }, {
+                    $set: {
+                        passkey: updatedPasskey,
+                    }
+                }, { returnDocument: "after" });
+            }
+        }
+        return sendResponse(200, {
+            message: "User updated successfully!", status: "success", data: {},
+        });
+
+    } catch (error) {
+        console.log("error--->", error)
+        // Check if it's an Axios error with response data
+        if (error.response && error.response.data) {
+            return sendResponse(500, { message: "Internal server error", status: "failure", error: error.response.data.error || "Error Finding User!" })
+        }
+        return sendResponse(500, {
+            message: "Internal server error", status: "failure", error: error.message || "Error Finding User!",
+        })
+    }
+}
 
 module.exports.getBitcoinWallet = async (event) => {
     try {

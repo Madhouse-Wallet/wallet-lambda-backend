@@ -83,6 +83,9 @@ functions:
   updtReceiveObj:
     timeout: 900
     handler: handler.updtReceiveObj 
+  updateKeysName:
+    timeout: 900
+    handler: handler.updateKeysName 
   getBitcoinWallet:
     timeout: 900
     handler: handler.getBitcoinWallet
