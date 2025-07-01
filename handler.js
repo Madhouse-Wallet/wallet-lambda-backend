@@ -454,14 +454,14 @@ module.exports.updtReceiveObj = async (event) => {
         const existingUser1 = await usersCollection.findOne({ email });
         if (existingUser1) {
 
-
+console.log("existingUser1.receivingPartyDetail",existingUser1.receivingPartyDetail)
             // Step 2: Filter out matching element from receivingPartyDetail
             const filteredPartyDetail = Array.isArray(existingUser1.receivingPartyDetail)
                 ? existingUser1.receivingPartyDetail.filter(
                     (entry) => entry?.data?.id != partyId
                 )
                 : [];
-
+            console.log("filteredPartyDetail-->", filteredPartyDetail)
             const existingUser = await UsersModel.findOneAndUpdate({
                 email
             }, {
