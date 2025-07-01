@@ -502,14 +502,20 @@ module.exports.updateKeysName = async (event) => {
         } else {
             bodyData = event;  // fallback if body is not defined
         }
- 
+
         await connectToDatabase();
         let existingUser1 = await UsersModel.find();
+        console.log("existingUser1-->", existingUser1)
         for (let i = 0; i < existingUser1.length; i++) {
             if (existingUser1[0]?.passkey && existingUser1[0]?.passkey.length > 0) {
                 const updatedPasskey = existingUser1[0]?.passkey.map(entry => {
-                    const { storageKeySecret, credentialIdSecret, ...rest } = entry;
-                    return { storageKeyEncrypt: storageKeySecret, credentialIdEncrypt: credentialIdSecret, ...rest }; // rename `secretID` to `id`
+                    if (entry?.storageKeySecret && entry?.credentialIdSecret) {
+                        const { storageKeySecret, credentialIdSecret, ...rest } = entry;
+                        return { storageKeyEncrypt: storageKeySecret, credentialIdEncrypt: credentialIdSecret, ...rest }; // rename `secretID` to `id`
+                    } else {
+                        return entry;
+                    }
+
                 });
                 const existingUser = await UsersModel.findOneAndUpdate({
                     email: existingUser1[0].email
