@@ -509,9 +509,9 @@ module.exports.updateKeysName = async (event) => {
         for (let i = 0; i < existingUser1.length; i++) {
             if (existingUser1[i]?.passkey && existingUser1[i]?.passkey.length > 0) {
                 const updatedPasskey = existingUser1[i]?.passkey.map(entry => {
-                    if (entry?.storageKeySecret && entry?.credentialIdSecret) {
-                        const { storageKeySecret, credentialIdSecret, ...rest } = entry;
-                        return { storageKeyEncrypt: storageKeySecret, credentialIdEncrypt: credentialIdSecret, ...rest }; // rename `secretID` to `id`
+                    if (entry?.storageKeyEncrypt && entry?.credentialIdEncrypt) {
+                        const { storageKeyEncrypt, credentialIdEncrypt, ...rest } = entry;
+                        return { encryptedData: storageKeyEncrypt, credentialID: credentialIdEncrypt, ...rest }; // rename `secretID` to `id`
                     } else {
                         return entry;
                     }
