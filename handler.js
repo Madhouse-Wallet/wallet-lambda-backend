@@ -356,9 +356,9 @@ module.exports.getUserPayments = async (event) => {
         } else {
             bodyData = event;  // fallback if body is not defined
         }
-        const { userId, page = 1, limit = 20 } = bodyData;
+        const { email, page = 1, limit = 20 } = bodyData;
         const skip = (page - 1) * limit;
-        if (!userId) {
+        if (!email) {
             return sendResponse(400, {
                 message: "Invalid Params!", status: "failure", error: "Invalid Params!",
             })
@@ -367,7 +367,7 @@ module.exports.getUserPayments = async (event) => {
         await connectToDatabase();
 
         let cond = {
-            userId: new ObjectId(userId)
+            email: email
         };
         // Fetch paginated results
         const [data, total] = await Promise.all([
