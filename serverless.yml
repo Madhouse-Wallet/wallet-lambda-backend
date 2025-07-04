@@ -98,6 +98,12 @@ functions:
   addPayment:
     timeout: 900
     handler: handler.addPayment
+  addSideShiftTrxn:
+    timeout: 900
+    handler: handler.addSideShiftTrxn
+  addBoltzTrxn:
+    timeout: 900
+    handler: handler.addBoltzTrxn
   getUserPayments:
     timeout: 900
     handler: handler.getUserPayments 
